@@ -1,0 +1,12 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#1a1a2e"/>
+  <rect x="60" y="200" width="680" height="200" rx="30" fill="#16213e"/>
+  <rect x="120" y="160" width="460" height="180" rx="20" fill="#0f3460"/>
+  <ellipse cx="180" cy="400" rx="70" ry="70" fill="#222"/>
+  <ellipse cx="180" cy="400" rx="45" ry="45" fill="#333"/>
+  <ellipse cx="620" cy="400" rx="70" ry="70" fill="#222"/>
+  <ellipse cx="620" cy="400" rx="45" ry="45" fill="#333"/>
+  <rect x="60" y="270" width="40" height="30" rx="5" fill="#e2b714" opacity="0.9"/>
+  <rect x="700" y="270" width="40" height="30" rx="5" fill="#ff4444" opacity="0.8"/>
+  <text x="400" y="530" text-anchor="middle" font-family="Arial" font-size="28" fill="#e2b714" font-weight="bold">PORSCHE MACAN GTS</text>
+</svg>

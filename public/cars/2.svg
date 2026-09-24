@@ -1,0 +1,12 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#0d0d0d"/>
+  <rect x="50" y="220" width="700" height="190" rx="25" fill="#1a1a1a"/>
+  <rect x="100" y="170" width="500" height="190" rx="18" fill="#111"/>
+  <ellipse cx="190" cy="410" rx="72" ry="72" fill="#1c1c1c"/>
+  <ellipse cx="190" cy="410" rx="46" ry="46" fill="#2a2a2a"/>
+  <ellipse cx="610" cy="410" rx="72" ry="72" fill="#1c1c1c"/>
+  <ellipse cx="610" cy="410" rx="46" ry="46" fill="#2a2a2a"/>
+  <rect x="50" y="280" width="38" height="28" rx="4" fill="#e2b714" opacity="0.95"/>
+  <rect x="710" y="280" width="38" height="28" rx="4" fill="#cc3333" opacity="0.9"/>
+  <text x="400" y="530" text-anchor="middle" font-family="Arial" font-size="28" fill="#e2b714" font-weight="bold">AUDI RS Q8 PERFORMANCE</text>
+</svg>
