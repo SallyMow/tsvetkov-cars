@@ -50,29 +50,6 @@ export default function HeroSection() {
   const [isNight, setIsNight] = useState(false);
   const [activeService, setActiveService] = useState<string | null>(null);
 
-  // Блокировка скролла body на десктопе для поэкранного скролла (snap), и на мобильном при открытой форме
-  React.useEffect(() => {
-    const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
-    if (isDesktop) {
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-      const container = document.getElementById('main-scroll-container');
-      if (container) {
-        container.focus();
-      }
-    } else {
-      if (activeService) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
-    }
-    return () => {
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-    };
-  }, [activeService]);
-
   // Форма заявки
   const [formName, setFormName] = useState('');
   const [formPhone, setFormPhone] = useState('');
@@ -110,7 +87,7 @@ export default function HeroSection() {
     }`;
 
   return (
-    <main className={`relative w-full h-screen overflow-hidden transition-colors duration-1000 ${isNight ? 'bg-[#09090b] text-white' : 'bg-[#f4f4f5] text-zinc-900'}`}>
+    <main className={`relative w-full h-screen overflow-hidden transition-colors duration-1000 ${isNight ? 'bg-[#09090b] text-white' : 'bg-[#fcfcfc] text-zinc-900'}`}>
 
       <style>{`
         @keyframes sidebarReveal {
@@ -142,23 +119,22 @@ export default function HeroSection() {
         .anim-success { animation: successPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .messenger-btn { transition: transform 0.2s ease, box-shadow 0.2s ease; }
         .messenger-btn:hover { transform: scale(1.12); }
-
-        /* Исключаем захват событий скролла 3D-канвасом */
-        .canvas-shield,
-        .canvas-shield *,
-        .canvas-shield canvas {
-          pointer-events: none !important;
-        }
-
-        #main-scroll-container {
-          touch-action: pan-y;
-          -webkit-overflow-scrolling: touch;
-        }
       `}</style>
+
+      {/* ── 3D Canvas ── */}
+      <div className="absolute top-0 left-0 w-full h-[50vh] md:h-screen z-0 pointer-events-none">
+        <Canvas camera={{ position: [0, 1.5, 7.0], fov: 32 }}>
+          <ambientLight intensity={isNight ? 0.3 : 0.6} />
+          <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
+          <directionalLight position={[-6, 7, -2]} intensity={isNight ? 1.0 : 2.5} color={isNight ? '#e0f2fe' : '#ffffff'} />
+          <Environment preset={isNight ? 'night' : 'city'} environmentIntensity={isNight ? 0.2 : 0.8} />
+          <AnimatedCar isNight={isNight} activeService={activeService} />
+        </Canvas>
+      </div>
 
       {/* ── Навигация ── */}
       <nav className="absolute top-0 w-full px-4 py-4 md:p-8 flex justify-between items-center z-50 pointer-events-none">
-        <Link href="/" className="font-bold text-base md:text-xl tracking-[0.2em] uppercase drop-shadow-md pointer-events-auto hover:opacity-80 transition-opacity" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.35)' }}>
+        <Link href="/" className="font-bold text-base md:text-xl tracking-[0.2em] uppercase drop-shadow-md pointer-events-auto hover:opacity-80 transition-opacity">
           TSVETKOV CARS
         </Link>
         <div className="flex items-center gap-3 md:gap-6 pointer-events-auto">
@@ -176,49 +152,25 @@ export default function HeroSection() {
         </div>
       </nav>
 
-      {/* ── 3D Canvas (На десктопе всегда зафиксирован на весь экран, на мобиле в верхней части) ── */}
-      <div className="fixed top-0 left-0 w-full h-[38vh] md:h-screen pointer-events-none z-0 canvas-shield">
-        <Canvas camera={{ position: [0, 1.2, 5.5], fov: 32 }} style={{ pointerEvents: 'none' }}>
-          <ambientLight intensity={isNight ? 0.3 : 0.6} />
-          <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
-          <directionalLight position={[-6, 7, -2]} intensity={isNight ? 1.0 : 2.5} color={isNight ? '#e0f2fe' : '#ffffff'} />
-          <Environment preset={isNight ? 'night' : 'city'} environmentIntensity={isNight ? 0.2 : 0.8} />
-          <AnimatedCar isNight={isNight} activeService={activeService} />
-        </Canvas>
-      </div>
-
-      {/* ── Скролл-контейнер со snap-привязкой на десктопе ── */}
+      {/* ── Скролл-контейнер ── */}
       <div
         id="main-scroll-container"
-        tabIndex={0}
-        className={`relative z-10 w-full h-full md:h-screen overflow-y-auto overflow-x-hidden md:snap-y md:snap-mandatory scroll-smooth outline-none transition-opacity duration-500 ${activeService ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-        style={{ touchAction: 'pan-y' }}
+        className={`relative z-10 w-full h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth transition-opacity duration-700 ${activeService ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 block'}`}
       >
-        {/* Главный экран: заголовок */}
-        <section className="w-full shrink-0 h-[46vh] md:h-screen md:snap-center relative flex flex-col items-center justify-start pointer-events-none z-30">
-          <div className="absolute top-[8vh] md:top-[12vh] left-0 w-full flex flex-col items-center px-4 z-30 pointer-events-none">
-            <h1
-              className={`text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl select-none ${isNight ? 'text-white' : 'text-zinc-950'}`}
-              style={{ textShadow: isNight ? '0 4px 24px rgba(0,0,0,0.6)' : '0 2px 16px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.7)' }}
-            >
-              TSVETKOV CARS
-            </h1>
-            <p
-              className={`mt-2 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-bold ${isNight ? 'text-white/80' : 'text-zinc-800'}`}
-              style={{ textShadow: isNight ? '0 2px 10px rgba(0,0,0,0.6)' : '0 1px 8px rgba(255,255,255,0.8)' }}
-            >
-              Элитная доставка и аренда
-            </p>
+
+        {/* Главный экран */}
+        <section className="w-full h-screen snap-center relative pointer-events-none">
+          <div className="absolute top-[8vh] md:top-[10vh] left-0 w-full flex flex-col items-center px-4">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl">TSVETKOV CARS</h1>
+            <p className="mt-3 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-medium opacity-80">Элитная доставка и аренда</p>
           </div>
-          {/* Распорка высоты под 3D-машину на мобильном */}
-          <div className="w-full h-[38vh] md:hidden"></div>
         </section>
 
         {/* Услуга 1 */}
-        <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-          <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
+        <section className="w-full h-screen snap-center flex items-center justify-start px-4 md:px-24 pointer-events-none">
+          <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">01 / Логистика</span>
-            <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Логистика под ключ</h2>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Логистика под ключ</h2>
             <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Прямые контракты с дилерами. Бережная логистика в закрытых контейнерах. Полное страхование на всех этапах пути из Европы, США и Азии.</p>
             <button onClick={() => setActiveService('Логистика под ключ')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
               Выбрать услугу
@@ -226,81 +178,32 @@ export default function HeroSection() {
           </div>
         </section>
 
+        {/* Услуга 2 */}
+        <section className="w-full h-screen snap-center flex items-center justify-end px-4 md:px-24 pointer-events-none">
+          <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
+            <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">02 / Оформление</span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Таможенная очистка</h2>
+            <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Берем на себя всю бюрократию. ЭПТС, СБКТС, утильсбор. Вы получаете автомобиль, полностью готовый к постановке на учет без скрытых платежей.</p>
+            <button onClick={() => setActiveService('Таможенная очистка')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+              Выбрать услугу
+            </button>
+          </div>
+        </section>
 
-            {/* Услуга 2 */}
-            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
-                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">02 / Оформление</span>
-                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Таможенная очистка</h2>
-                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Берем на себя всю бюрократию. ЭПТС, СБКТС, утильсбор. Вы получаете автомобиль, полностью готовый к постановке на учет без скрытых платежей.</p>
-                <button onClick={() => setActiveService('Таможенная очистка')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
-                  Выбрать услугу
-                </button>
-              </div>
-            </section>
-
-            {/* Услуга 3 */}
-            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
-                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">03 / Подбор</span>
-                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Эксклюзив</h2>
-                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Находим лимитированные серии и редкие комплектации по всему миру. Детальная проверка юридической истории и технического состояния.</p>
-                <button onClick={() => setActiveService('Эксклюзивный подбор')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
-                  Выбрать услугу
-                </button>
-              </div>
-            </section>
-
-            {/* Услуга 4 — Аренда */}
-            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
-                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">04 / Аренда</span>
-                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Прокат премиум-авто</h2>
-                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Эксклюзивный парк автомобилей. Без скрытых условий. Подача машины в любую точку города за 60 минут.</p>
-                <button onClick={() => setActiveService('Прокат премиум-авто')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
-                  Выбрать услугу
-                </button>
-              </div>
-            </section>
-
-            {/* Услуга 5 — Обслуживание */}
-            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
-                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">05 / Обслуживание</span>
-                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Детейлинг и защита</h2>
-                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Премиальная оклейка кузова полиуретановой бронепленкой, нанесение керамики и полный детейлинг-комплекс для вашего авто.</p>
-                <button onClick={() => setActiveService('Детейлинг и защита')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
-                  Выбрать услугу
-                </button>
-              </div>
-            </section>
-
-            {/* Услуга 6 — Дооснащение */}
-            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
-                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">06 / Дооснащение</span>
-                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Тюнинг и стайлинг</h2>
-                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Установка аэродинамических обвесов, подбор кованых дисков, чип-тюнинг и эксклюзивный перешив салона.</p>
-                <button onClick={() => setActiveService('Тюнинг и стайлинг')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
-                  Выбрать услугу
-                </button>
-              </div>
-            </section>
-
-            {/* Услуга 7 — Финансы */}
-            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
-                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">07 / Финансы</span>
-                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Лизинг и Trade-In</h2>
-                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Выгодные программы лизинга для юрлиц и обмен вашего текущего автомобиля на новый на прозрачных условиях.</p>
-                <button onClick={() => setActiveService('Лизинг и Trade-In')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
-                  Выбрать услугу
-                </button>
-              </div>
-            </section>
+        {/* Услуга 3 */}
+        <section className="w-full h-screen snap-center flex items-center justify-start px-4 md:px-24 pointer-events-none">
+          <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
+            <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">03 / Подбор</span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Эксклюзив</h2>
+            <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Находим лимитированные серии и редкие комплектации по всему миру. Детальная проверка юридической истории и технического состояния.</p>
+            <button onClick={() => setActiveService('Эксклюзивный подбор')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+              Выбрать услугу
+            </button>
+          </div>
+        </section>
 
         {/* ── Блок «Как мы работаем» ── */}
-        <section className={`w-full shrink-0 min-h-screen md:snap-start relative z-20 transition-colors duration-1000 py-16 md:py-28 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        <div className={`w-full snap-start transition-colors duration-1000 py-16 md:py-28 px-4 md:px-24 shadow-[0_-20px_50px_rgba(0,0,0,0.3)] ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 md:gap-6 mb-10 md:mb-16">
               <div className="h-[2px] w-8 md:w-12 bg-[#ffb86c]"></div>
@@ -322,10 +225,10 @@ export default function HeroSection() {
               ))}
             </div>
           </div>
-        </section>
+        </div>
 
         {/* ── Блок «Гарантии» ── */}
-        <section className={`w-full shrink-0 min-h-screen md:snap-start relative z-20 transition-colors duration-1000 py-14 md:py-20 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        <div className={`w-full snap-start transition-colors duration-1000 py-14 md:py-20 px-4 md:px-24 ${isNight ? 'bg-[#0d0d10]' : 'bg-white'}`}>
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 md:gap-6 mb-8 md:mb-12">
               <div className="h-[2px] w-8 md:w-12 bg-[#ffb86c]"></div>
@@ -333,7 +236,7 @@ export default function HeroSection() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
               {guarantees.map((g, i) => (
-                <div key={i} className={`flex gap-4 md:gap-5 p-6 md:p-8 rounded-3xl border transition-colors duration-500 ${isNight ? 'border-white/8 bg-white/3 hover:border-[#ffb86c]/30' : 'border-black/6 bg-white hover:border-black/15'}`}
+                <div key={i} className={`flex gap-4 md:gap-5 p-6 md:p-8 rounded-3xl border transition-colors duration-500 ${isNight ? 'border-white/8 bg-white/3 hover:border-[#ffb86c]/30' : 'border-black/6 bg-zinc-50 hover:border-black/15'}`}
                   style={{ background: isNight ? 'rgba(255,255,255,0.03)' : undefined }}>
                   <div className="text-[#ffb86c] shrink-0 mt-0.5">{g.icon}</div>
                   <div>
@@ -344,10 +247,10 @@ export default function HeroSection() {
               ))}
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Переход в каталог */}
-        <section className={`w-full shrink-0 min-h-screen md:snap-start relative z-20 transition-colors duration-1000 flex items-center justify-center py-24 md:py-40 px-4 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        <div className={`w-full snap-start transition-colors duration-1000 flex items-center justify-center py-24 md:py-40 px-4 ${isNight ? 'shadow-[0_-20px_50px_rgba(0,0,0,0.5)]' : 'shadow-[0_-20px_50px_rgba(0,0,0,0.05)]'} ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="text-center flex flex-col items-center">
             <h2 className="text-3xl md:text-6xl font-black uppercase tracking-tighter mb-4 md:mb-6">Готовы выбрать?</h2>
             <p className={`max-w-sm md:max-w-md text-sm font-medium mb-8 md:mb-10 px-2 ${isNight ? 'opacity-60' : 'opacity-70'}`}>
@@ -357,10 +260,10 @@ export default function HeroSection() {
               Открыть каталог авто
             </Link>
           </div>
-        </section>
+        </div>
 
         {/* ── Футер ── */}
-        <footer className={`w-full shrink-0 md:snap-start relative z-20 pt-16 pb-48 md:py-20 px-6 md:px-24 border-t transition-colors duration-1000 ${isNight ? 'bg-[#09090b] border-white/10' : 'bg-[#f4f4f5] border-black/10'}`} style={{ paddingBottom: 'max(12rem, calc(env(safe-area-inset-bottom, 24px) + 9rem))' }}>
+        <footer className={`w-full snap-start py-20 px-10 md:px-24 border-t transition-colors duration-1000 ${isNight ? 'bg-[#09090b] border-white/10' : 'bg-[#f4f4f5] border-black/10'}`}>
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1 md:col-span-2">
               <h2 className="text-3xl md:text-4xl font-black tracking-tighter uppercase mb-4">Tsvetkov Cars Club</h2>
@@ -389,15 +292,12 @@ export default function HeroSection() {
             </div>
 
             <div>
-              <h4 className={`font-bold uppercase tracking-widest text-xs mb-6 ${isNight ? 'opacity-80' : 'opacity-60'}`}>Услуги и сервис</h4>
-              <ul className={`space-y-3 text-sm font-medium ${isNight ? 'opacity-60' : 'opacity-80'}`}>
-                <li><Link href="/catalog" className="hover:opacity-100 transition-opacity">Каталог авто в наличии</Link></li>
-                <li onClick={() => setActiveService('Логистика под ключ')} className="hover:opacity-100 cursor-pointer transition-opacity">Логистика под ключ</li>
-                <li onClick={() => setActiveService('Таможенная очистка')} className="hover:opacity-100 cursor-pointer transition-opacity">Таможенное оформление</li>
-                <li onClick={() => setActiveService('Прокат премиум-авто')} className="hover:opacity-100 cursor-pointer transition-opacity">Прокат премиум-авто</li>
-                <li onClick={() => setActiveService('Детейлинг и защита')} className="hover:opacity-100 cursor-pointer transition-opacity">Детейлинг и защита</li>
-                <li onClick={() => setActiveService('Тюнинг и стайлинг')} className="hover:opacity-100 cursor-pointer transition-opacity">Тюнинг и стайлинг</li>
-                <li onClick={() => setActiveService('Лизинг и Trade-In')} className="hover:opacity-100 cursor-pointer transition-opacity">Лизинг и Trade-In</li>
+              <h4 className={`font-bold uppercase tracking-widest text-xs mb-6 ${isNight ? 'opacity-80' : 'opacity-60'}`}>Навигация</h4>
+              <ul className={`space-y-4 text-sm font-medium ${isNight ? 'opacity-60' : 'opacity-80'}`}>
+                <li><Link href="/catalog" className="hover:opacity-100 transition-opacity">Каталог автомобилей</Link></li>
+                <li className="hover:opacity-100 cursor-pointer transition-opacity">Услуги логистики</li>
+                <li className="hover:opacity-100 cursor-pointer transition-opacity">Таможенное оформление</li>
+                <li className="hover:opacity-100 cursor-pointer transition-opacity">Автомобили с аукционов</li>
               </ul>
             </div>
 
@@ -426,15 +326,9 @@ export default function HeroSection() {
 
       </div>
 
-      {/* ── Плавающие мессенджеры — скрыты на мобиле когда открыта форма ── */}
-      <div
-        className={`fixed z-50 flex flex-col items-center gap-0 rounded-full border border-white/10 backdrop-blur-xl shadow-2xl overflow-hidden transition-all duration-300 ${activeService ? 'opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto' : 'opacity-100'}`}
-        style={{
-          background: 'rgba(24,24,27,0.85)',
-          bottom: 'max(24px, env(safe-area-inset-bottom, 24px))',
-          right: 'max(16px, env(safe-area-inset-right, 16px))',
-        }}
-      >
+      {/* ── ЗАДАЧА 4: Плавающие мессенджеры (fixed) — премиальная капсула ── */}
+      <div className="fixed bottom-8 right-8 z-50 flex flex-col items-center gap-0 rounded-full border border-white/10 backdrop-blur-xl shadow-2xl overflow-hidden"
+        style={{ background: 'rgba(24,24,27,0.85)' }}>
         <a href="https://t.me/tsvetkovcars" target="_blank" rel="noopener noreferrer"
           className="w-[52px] h-[52px] flex items-center justify-center text-white/60 hover:text-[#ffb86c] transition-colors duration-200"
           title="Telegram">
@@ -448,140 +342,101 @@ export default function HeroSection() {
         </a>
       </div>
 
-      {/* ── Оверлей с формой заявки ── */}
+      {/* ── ЗАДАЧА 1: Оверлей с реальной формой заявки ── */}
       {activeService && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 pointer-events-none flex items-stretch md:items-center">
-          {/* Десктопный фон — Glassmorphism матовое стекло с градиентом */}
-          <div className={`hidden md:block absolute top-0 left-0 w-[55%] h-full z-0 backdrop-blur-md anim-bg ${
-            isNight
-              ? 'bg-gradient-to-r from-black/60 via-black/40 to-transparent'
-              : 'bg-gradient-to-r from-white/60 via-white/40 to-transparent'
-          }`}></div>
+        <div className="fixed top-0 left-0 w-full h-full z-50 pointer-events-none flex items-center">
+          <div className={`absolute top-0 left-0 w-[80%] md:w-[45%] h-full bg-gradient-to-r ${isNight ? 'from-[#09090b] via-[#09090b]/80' : 'from-[#fcfcfc] via-[#fcfcfc]/90'} to-transparent z-0 anim-bg`}></div>
 
-          {/* Мобильный фон — Glassmorphism матовое стекло, силуэт машины красиво просвечивает */}
-          <div className={`md:hidden absolute top-0 left-0 w-full h-full z-0 ${isNight ? 'bg-black/60' : 'bg-white/60'} backdrop-blur-md`}></div>
+          <div key={activeService} className="pointer-events-auto anim-sidebar relative pl-10 md:pl-24 py-10 max-w-lg z-10">
+            <div className={`absolute top-0 left-10 md:left-24 w-[2px] ${isNight ? 'bg-[#ffb86c]' : 'bg-black'} anim-line shadow-[0_0_15px_#ffb86c]`}></div>
 
-          {/* Контент формы — на мобиле скроллируемый блок на всю высоту */}
-          <div
-            key={activeService}
-            className="pointer-events-auto anim-sidebar relative z-10 w-full md:max-w-lg flex flex-col justify-start md:justify-center overflow-y-auto"
-            style={{ paddingTop: 'max(72px, env(safe-area-inset-top, 72px))', paddingBottom: 'max(32px, env(safe-area-inset-bottom, 32px))' }}
-          >
-            {/* Декоративная вертикальная линия */}
-            <div className={`absolute top-0 left-4 md:left-24 w-[2px] ${isNight ? 'bg-[#ffb86c]' : 'bg-black'} anim-line shadow-[0_0_15px_#ffb86c]`}></div>
+            <div className="anim-item-1 mb-4 flex items-center gap-3 pl-6">
+              <div className={`h-2 w-2 rounded-full animate-pulse ${isNight ? 'bg-[#ffb86c]' : 'bg-red-500'}`}></div>
+              <span className={`text-[10px] font-mono tracking-[0.3em] uppercase ${isNight ? 'text-white/50' : 'text-black/50'}`}>Config Mode</span>
+            </div>
 
-            <div className="px-8 md:pl-24 md:pr-6">
-              <div className="anim-item-1 mb-4 flex items-center gap-3">
-                <div className={`h-2 w-2 rounded-full animate-pulse ${isNight ? 'bg-[#ffb86c]' : 'bg-red-500'}`}></div>
-                <span className={`text-[10px] font-mono tracking-[0.3em] uppercase ${isNight ? 'text-white/50' : 'text-black/50'}`}>Config Mode</span>
-              </div>
+            <h2 className={`anim-item-2 text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-3 pl-6 ${isNight ? 'text-white' : 'text-black'}`}>
+              {activeService.split(' ').map((word, i) => (
+                <React.Fragment key={i}>{word} <br /></React.Fragment>
+              ))}
+            </h2>
 
-              <h2 className={`anim-item-2 text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-3 ${isNight ? 'text-white' : 'text-black'}`}>
-                {activeService.split(' ').map((word, i) => (
-                  <React.Fragment key={i}>{word} <br /></React.Fragment>
-                ))}
-              </h2>
+            <p className={`anim-item-3 text-sm font-medium mb-8 pl-6 ${isNight ? 'text-white/70' : 'text-black/70'}`}>
+              Оставьте заявку — наш эксперт свяжется в течение 15 минут.
+            </p>
 
-              <p className={`anim-item-3 text-sm font-medium mb-6 ${isNight ? 'text-white/70' : 'text-black/70'}`}>
-                Оставьте заявку — наш эксперт свяжется в течение 15 минут.
-              </p>
-
-              {/* Форма */}
-              {submitted ? (
-                <div className="anim-success">
-                  <div className={`flex items-center gap-4 p-6 rounded-2xl border ${isNight ? 'border-[#ffb86c]/30 bg-[#ffb86c]/8' : 'border-black/10 bg-black/3'}`}
-                    style={{ background: isNight ? 'rgba(255,184,108,0.06)' : 'rgba(0,0,0,0.02)' }}>
-                    <div className="w-10 h-10 rounded-full bg-[#ffb86c] flex items-center justify-center shrink-0">
-                      <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm uppercase tracking-wide">Заявка отправлена!</p>
-                      <p className={`text-xs mt-1 ${isNight ? 'opacity-60' : 'opacity-60'}`}>Мы свяжемся с вами в течение 15 минут</p>
-                    </div>
+            {/* ── Форма заявки ── */}
+            {submitted ? (
+              <div className="anim-success pl-6">
+                <div className={`flex items-center gap-4 p-6 rounded-2xl border ${isNight ? 'border-[#ffb86c]/30 bg-[#ffb86c]/8' : 'border-black/10 bg-black/3'}`}
+                  style={{ background: isNight ? 'rgba(255,184,108,0.06)' : 'rgba(0,0,0,0.02)' }}>
+                  <div className="w-10 h-10 rounded-full bg-[#ffb86c] flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm uppercase tracking-wide">Заявка отправлена!</p>
+                    <p className={`text-xs mt-1 ${isNight ? 'opacity-60' : 'opacity-60'}`}>Мы свяжемся с вами в течение 15 минут</p>
                   </div>
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="anim-item-3 flex flex-col gap-5">
-                  <div>
-                    <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Интересующая услуга</label>
-                    <select
-                      value={activeService}
-                      onChange={e => setActiveService(e.target.value)}
-                      className={`${inputClass(isNight)} cursor-pointer`}
-                    >
-                      <option value="Логистика под ключ" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>01 / Логистика под ключ</option>
-                      <option value="Таможенная очистка" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>02 / Таможенная очистка</option>
-                      <option value="Эксклюзивный подбор" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>03 / Эксклюзивный подбор</option>
-                      <option value="Прокат премиум-авто" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>04 / Аренда (Прокат премиум-авто)</option>
-                      <option value="Детейлинг и защита" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>05 / Детейлинг и защита (Обслуживание)</option>
-                      <option value="Тюнинг и стайлинг" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>06 / Тюнинг и стайлинг (Дооснащение)</option>
-                      <option value="Лизинг и Trade-In" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>07 / Лизинг и Trade-In (Финансы)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Ваше имя</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Иван Иванов"
-                      value={formName}
-                      onChange={e => setFormName(e.target.value)}
-                      className={inputClass(isNight)}
-                    />
-                  </div>
-                  <div>
-                    <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Телефон</label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+7 977 877 56 25"
-                      value={formPhone}
-                      onChange={e => setFormPhone(e.target.value)}
-                      className={inputClass(isNight)}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-3 mt-2">
-                    {/* ФЗ-152 */}
-                    <label className="flex items-start gap-3 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        required
-                        className="mt-0.5 w-4 h-4 shrink-0 accent-[#ffb86c] cursor-pointer"
-                      />
-                      <span className={`text-[10px] leading-relaxed ${isNight ? 'text-white/40' : 'text-black/40'} group-hover:text-white/60 transition-colors`}>
-                        Нажимая кнопку, вы соглашаетесь с{' '}
-                        <span className="underline underline-offset-2 cursor-pointer hover:opacity-100">
-                          Политикой конфиденциальности
-                        </span>{' '}
-                        и обработкой персональных данных.
-                      </span>
-                    </label>
-                    <button
-                      type="submit"
-                      className={`w-full py-4 font-bold uppercase tracking-[0.2em] text-xs transition-all shadow-lg cursor-pointer ${isNight ? 'bg-[#ffb86c] text-black hover:bg-[#eab308]' : 'bg-black text-white hover:bg-zinc-800'}`}
-                    >
-                      Отправить заявку
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveService(null)}
-                      className={`w-full py-4 bg-transparent border font-bold uppercase tracking-[0.2em] text-xs transition-all cursor-pointer ${isNight ? 'border-white/20 text-white hover:border-white/60' : 'border-black/20 text-black hover:border-black/60'}`}
-                    >
-                      Вернуться к меню
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              {/* ── Брендовый футер формы ── */}
-              <div className={`mt-10 pt-5 border-t ${isNight ? 'border-white/8' : 'border-black/8'}`}>
-                <p className={`text-[10px] font-black tracking-[0.35em] uppercase text-center ${isNight ? 'text-white/25' : 'text-zinc-400/80'}`}>
-                  TSVETKOV CARS
-                </p>
               </div>
-            </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="anim-item-3 flex flex-col gap-5 pl-6">
+                <div>
+                  <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Ваше имя</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Иван Иванов"
+                    value={formName}
+                    onChange={e => setFormName(e.target.value)}
+                    className={inputClass(isNight)}
+                  />
+                </div>
+                <div>
+                  <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Телефон</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="+7 977 877 56 25"
+                    value={formPhone}
+                    onChange={e => setFormPhone(e.target.value)}
+                    className={inputClass(isNight)}
+                  />
+                </div>
+                <div className="flex flex-col gap-3 mt-2">
+                  {/* ФЗ-152: согласие на обработку данных */}
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      required
+                      className="mt-0.5 w-4 h-4 shrink-0 accent-[#ffb86c] cursor-pointer"
+                    />
+                    <span className={`text-[10px] leading-relaxed ${isNight ? 'text-white/40' : 'text-black/40'} group-hover:text-white/60 transition-colors`}>
+                      Нажимая кнопку, вы соглашаетесь с{' '}
+                      <span className="underline underline-offset-2 cursor-pointer hover:opacity-100">
+                        Политикой конфиденциальности
+                      </span>{' '}
+                      и обработкой персональных данных.
+                    </span>
+                  </label>
+                  <button
+                    type="submit"
+                    className={`w-full py-4 font-bold uppercase tracking-[0.2em] text-xs transition-all shadow-lg cursor-pointer ${isNight ? 'bg-[#ffb86c] text-black hover:bg-[#eab308]' : 'bg-black text-white hover:bg-zinc-800'}`}
+                  >
+                    Отправить заявку
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveService(null)}
+                    className={`w-full py-4 bg-transparent border font-bold uppercase tracking-[0.2em] text-xs transition-all cursor-pointer ${isNight ? 'border-white/20 text-white hover:border-white/60' : 'border-black/20 text-black hover:border-black/60'}`}
+                  >
+                    Вернуться к меню
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

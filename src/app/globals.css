@@ -11,8 +11,6 @@
 
   html {
     scroll-behavior: smooth;
-    overflow-x: hidden;
-    overflow-y: auto;
   }
 
   body {
@@ -20,8 +18,6 @@
     color: #ffffff;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
-    overflow-y: auto;
-    min-height: 100vh;
   }
 
   ::selection {
@@ -91,6 +87,24 @@
   .scrollbar-hidden::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* Scanline effect */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.15), transparent);
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+  z-index: 9999;
 }
 
 /* ── Perspective grid hyperspeed scroll ── */
