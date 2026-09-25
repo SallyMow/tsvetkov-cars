@@ -75,45 +75,45 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       // Киноэффект: эффектный подлет камеры к деталям машины при клике на услугу на ПК
       if (activeService === 'Логистика под ключ') {
         // Фокус на переднее крыло, колесный диск и воздухозаборники
-        targetCamPos.set(1.4, 0.45, 3.4);
-        targetLook.set(0.4, -0.15, 0.2);
+        targetCamPos.set(1.4, 0.40, 2.9);
+        targetLook.set(0.3, -0.15, 0.2);
       } else if (activeService === 'Таможенная очистка') {
         // Фокус на капот, фары и герб Porsche крупным планом
-        targetCamPos.set(1.1, 0.8, 3.2);
-        targetLook.set(0.2, 0.05, 0.4);
+        targetCamPos.set(1.1, 0.70, 2.7);
+        targetLook.set(0.2, 0.05, 0.3);
       } else if (activeService === 'Эксклюзивный подбор') {
         // Динамичный ракурс три четверти спереди
-        targetCamPos.set(1.8, 0.65, 3.0);
-        targetLook.set(0.5, 0.0, 0);
+        targetCamPos.set(1.7, 0.55, 2.6);
+        targetLook.set(0.4, 0.0, 0);
       } else if (activeService === 'Прокат премиум-авто') {
         // Задняя часть: спойлер GT3 и горящая LED-полоса фонарей
-        targetCamPos.set(1.3, 0.85, -3.2);
+        targetCamPos.set(1.3, 0.75, -2.7);
         targetLook.set(0.3, 0.1, 0);
       } else if (activeService === 'Детейлинг и защита') {
         // Макро-ракурс на зеркальный глянец кузова и изгибы профиля
-        targetCamPos.set(1.6, 0.4, 2.7);
-        targetLook.set(0.5, -0.1, 0.2);
+        targetCamPos.set(1.5, 0.35, 2.3);
+        targetLook.set(0.4, -0.1, 0.2);
       } else if (activeService === 'Тюнинг и стайлинг') {
         // Спортивный низкий ракурс на диффузор и сдвоенный выхлоп
-        targetCamPos.set(1.4, 0.35, -3.0);
-        targetLook.set(0.4, -0.2, 0);
+        targetCamPos.set(1.3, 0.28, -2.6);
+        targetLook.set(0.3, -0.2, 0);
       } else if (activeService === 'Лизинг и Trade-In') {
         // Полный солидный профиль кузова
-        targetCamPos.set(2.2, 0.6, 3.0);
-        targetLook.set(0.6, 0.0, 0);
+        targetCamPos.set(1.9, 0.50, 2.6);
+        targetLook.set(0.5, 0.0, 0);
       } else {
-        targetCamPos.set(1.5, 0.65, 3.5);
+        targetCamPos.set(1.5, 0.65, 3.0);
         targetLook.set(0.4, 0.0, 0);
       }
     } else {
-      // Стандартный ракурс: на ПК машина крупная (dist 4.8), на мобиле 6.2
-      const dist = isMobile ? 6.2 : 4.8;
-      const camY = isMobile ? 0.95 : 0.75;
+      // Стандартный ракурс: на ПК машина крупная, солидная и центрированная
+      const dist = isMobile ? 6.2 : 4.3;
+      const camY = isMobile ? 0.95 : 0.65;
       targetCamPos.set(0, camY, dist);
-      targetLook.set(0, isMobile ? 0.05 : 0.05, 0);
+      targetLook.set(0, 0.05, 0);
     }
     
-    const camDamping = (!isMobile && activeService) ? 2.6 : 2.2;
+    const camDamping = (!isMobile && activeService) ? 2.8 : 2.2;
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, camDamping, delta);
     state.camera.position.y = THREE.MathUtils.damp(state.camera.position.y, targetCamPos.y, camDamping, delta);
     state.camera.position.z = THREE.MathUtils.damp(state.camera.position.z, targetCamPos.z, camDamping, delta);
@@ -143,7 +143,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     return new THREE.CanvasTexture(canvas);
   }, []);
 
-  const currentScale = isMobile ? 1.02 : 1.36;
+  const currentScale = isMobile ? 1.05 : 1.70;
 
   return (
     <group>

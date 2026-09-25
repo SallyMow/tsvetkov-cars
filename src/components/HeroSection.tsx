@@ -50,14 +50,25 @@ export default function HeroSection() {
   const [isNight, setIsNight] = useState(false);
   const [activeService, setActiveService] = useState<string | null>(null);
 
-  // Блокировка скролла body только когда открыта форма заявки
+  // Блокировка скролла body на десктопе для поэкранного скролла (snap), и на мобильном при открытой форме
   React.useEffect(() => {
-    if (activeService) {
+    const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
+    if (isDesktop) {
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
+      const container = document.getElementById('main-scroll-container');
+      if (container) {
+        container.focus();
+      }
     } else {
-      document.body.style.overflow = '';
+      if (activeService) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
     }
     return () => {
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     };
   }, [activeService]);
@@ -165,64 +176,59 @@ export default function HeroSection() {
         </div>
       </nav>
 
+      {/* ── 3D Canvas (На десктопе всегда зафиксирован на весь экран, на мобиле в верхней части) ── */}
+      <div className="fixed top-0 left-0 w-full h-[38vh] md:h-screen pointer-events-none z-0 canvas-shield">
+        <Canvas camera={{ position: [0, 1.2, 5.5], fov: 32 }} style={{ pointerEvents: 'none' }}>
+          <ambientLight intensity={isNight ? 0.3 : 0.6} />
+          <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
+          <directionalLight position={[-6, 7, -2]} intensity={isNight ? 1.0 : 2.5} color={isNight ? '#e0f2fe' : '#ffffff'} />
+          <Environment preset={isNight ? 'night' : 'city'} environmentIntensity={isNight ? 0.2 : 0.8} />
+          <AnimatedCar isNight={isNight} activeService={activeService} />
+        </Canvas>
+      </div>
+
       {/* ── Скролл-контейнер со snap-привязкой на десктопе ── */}
       <div
         id="main-scroll-container"
         tabIndex={0}
-        className={`relative z-10 w-full h-screen overflow-y-auto overflow-x-hidden md:snap-y md:snap-mandatory scroll-smooth outline-none ${activeService ? 'pointer-events-none' : ''}`}
+        className={`relative z-10 w-full h-full md:h-screen overflow-y-auto overflow-x-hidden md:snap-y md:snap-mandatory scroll-smooth outline-none transition-opacity duration-500 ${activeService ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
         style={{ touchAction: 'pan-y' }}
       >
-
-        {/* ── Родительский контейнер: Главный экран + Услуги (со sticky 3D машиной на мобильном, fixed на ПК) ── */}
-        <div className="relative w-full md:contents">
-
-          {/* 3D Canvas: на мобильном sticky top-[7vh] h-[38vh], на десктопе fixed fullscreen */}
-          <div className="sticky top-[7vh] md:fixed md:inset-0 w-full h-[38vh] md:h-screen pointer-events-none z-0 canvas-shield">
-            <Canvas camera={{ position: [0, 1.5, 7.0], fov: 36 }} style={{ pointerEvents: 'none' }}>
-              <ambientLight intensity={isNight ? 0.3 : 0.6} />
-              <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
-              <directionalLight position={[-6, 7, -2]} intensity={isNight ? 1.0 : 2.5} color={isNight ? '#e0f2fe' : '#ffffff'} />
-              <Environment preset={isNight ? 'night' : 'city'} environmentIntensity={isNight ? 0.2 : 0.8} />
-              <AnimatedCar isNight={isNight} activeService={activeService} />
-            </Canvas>
+        {/* Главный экран: заголовок */}
+        <section className="w-full shrink-0 h-[46vh] md:h-screen md:snap-center relative flex flex-col items-center justify-start pointer-events-none z-30">
+          <div className="absolute top-[8vh] md:top-[12vh] left-0 w-full flex flex-col items-center px-4 z-30 pointer-events-none">
+            <h1
+              className={`text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl select-none ${isNight ? 'text-white' : 'text-zinc-950'}`}
+              style={{ textShadow: isNight ? '0 4px 24px rgba(0,0,0,0.6)' : '0 2px 16px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.7)' }}
+            >
+              TSVETKOV CARS
+            </h1>
+            <p
+              className={`mt-2 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-bold ${isNight ? 'text-white/80' : 'text-zinc-800'}`}
+              style={{ textShadow: isNight ? '0 2px 10px rgba(0,0,0,0.6)' : '0 1px 8px rgba(255,255,255,0.8)' }}
+            >
+              Элитная доставка и аренда
+            </p>
           </div>
+          {/* Распорка высоты под 3D-машину на мобильном */}
+          <div className="w-full h-[38vh] md:hidden"></div>
+        </section>
 
-          {/* Контент страниц — плавно скрывается при открытии формы заявки */}
-          <div className={`transition-opacity duration-500 md:contents ${activeService ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-            {/* Главный экран: заголовок */}
-            <section className="w-full h-[46vh] md:h-screen md:snap-start relative flex flex-col items-center justify-start pointer-events-none z-30">
-              <div className="absolute top-[8vh] md:top-[10vh] left-0 w-full flex flex-col items-center px-4 z-30 pointer-events-none">
-                <h1
-                  className={`text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl select-none ${isNight ? 'text-white' : 'text-zinc-950'}`}
-                  style={{ textShadow: isNight ? '0 4px 24px rgba(0,0,0,0.6)' : '0 2px 16px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.7)' }}
-                >
-                  TSVETKOV CARS
-                </h1>
-                <p
-                  className={`mt-2 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-bold ${isNight ? 'text-white/80' : 'text-zinc-800'}`}
-                  style={{ textShadow: isNight ? '0 2px 10px rgba(0,0,0,0.6)' : '0 1px 8px rgba(255,255,255,0.8)' }}
-                >
-                  Элитная доставка и аренда
-                </p>
-              </div>
-              {/* Распорка высоты под 3D-машину на мобильном */}
-              <div className="w-full h-[38vh] md:hidden"></div>
-            </section>
+        {/* Услуга 1 */}
+        <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+          <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
+            <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">01 / Логистика</span>
+            <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Логистика под ключ</h2>
+            <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Прямые контракты с дилерами. Бережная логистика в закрытых контейнерах. Полное страхование на всех этапах пути из Европы, США и Азии.</p>
+            <button onClick={() => setActiveService('Логистика под ключ')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+              Выбрать услугу
+            </button>
+          </div>
+        </section>
 
-            {/* Услуга 1 */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
-                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">01 / Логистика</span>
-                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Логистика под ключ</h2>
-                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Прямые контракты с дилерами. Бережная логистика в закрытых контейнерах. Полное страхование на всех этапах пути из Европы, США и Азии.</p>
-                <button onClick={() => setActiveService('Логистика под ключ')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
-                  Выбрать услугу
-                </button>
-              </div>
-            </section>
 
             {/* Услуга 2 */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">02 / Оформление</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Таможенная очистка</h2>
@@ -234,7 +240,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 3 */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">03 / Подбор</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Эксклюзив</h2>
@@ -246,7 +252,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 4 — Аренда */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">04 / Аренда</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Прокат премиум-авто</h2>
@@ -258,7 +264,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 5 — Обслуживание */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">05 / Обслуживание</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Детейлинг и защита</h2>
@@ -270,7 +276,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 6 — Дооснащение */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">06 / Дооснащение</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Тюнинг и стайлинг</h2>
@@ -282,7 +288,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 7 — Финансы */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full shrink-0 md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none md:pointer-events-auto pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">07 / Финансы</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Лизинг и Trade-In</h2>
@@ -292,14 +298,9 @@ export default function HeroSection() {
                 </button>
               </div>
             </section>
-          </div>
 
-        </div>
-
-        {/* ── Нижние секции сайта (скрываются при открытой форме) ── */}
-        <div className={`transition-opacity duration-500 md:contents ${activeService ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-          {/* ── Блок «Как мы работаем» ── */}
-          <div className={`w-full md:snap-start relative z-20 transition-colors duration-1000 py-16 md:py-28 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        {/* ── Блок «Как мы работаем» ── */}
+        <section className={`w-full shrink-0 min-h-screen md:snap-start relative z-20 transition-colors duration-1000 py-16 md:py-28 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 md:gap-6 mb-10 md:mb-16">
               <div className="h-[2px] w-8 md:w-12 bg-[#ffb86c]"></div>
@@ -321,10 +322,10 @@ export default function HeroSection() {
               ))}
             </div>
           </div>
-        </div>
+        </section>
 
         {/* ── Блок «Гарантии» ── */}
-        <div className={`w-full md:snap-start relative z-20 transition-colors duration-1000 py-14 md:py-20 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        <section className={`w-full shrink-0 min-h-screen md:snap-start relative z-20 transition-colors duration-1000 py-14 md:py-20 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 md:gap-6 mb-8 md:mb-12">
               <div className="h-[2px] w-8 md:w-12 bg-[#ffb86c]"></div>
@@ -343,10 +344,10 @@ export default function HeroSection() {
               ))}
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Переход в каталог */}
-        <div className={`w-full md:snap-start relative z-20 transition-colors duration-1000 flex items-center justify-center py-24 md:py-40 px-4 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        <section className={`w-full shrink-0 min-h-screen md:snap-start relative z-20 transition-colors duration-1000 flex items-center justify-center py-24 md:py-40 px-4 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="text-center flex flex-col items-center">
             <h2 className="text-3xl md:text-6xl font-black uppercase tracking-tighter mb-4 md:mb-6">Готовы выбрать?</h2>
             <p className={`max-w-sm md:max-w-md text-sm font-medium mb-8 md:mb-10 px-2 ${isNight ? 'opacity-60' : 'opacity-70'}`}>
@@ -356,10 +357,10 @@ export default function HeroSection() {
               Открыть каталог авто
             </Link>
           </div>
-        </div>
+        </section>
 
         {/* ── Футер ── */}
-        <footer className={`w-full md:snap-start relative z-20 pt-16 pb-48 md:py-20 px-6 md:px-24 border-t transition-colors duration-1000 ${isNight ? 'bg-[#09090b] border-white/10' : 'bg-[#f4f4f5] border-black/10'}`} style={{ paddingBottom: 'max(12rem, calc(env(safe-area-inset-bottom, 24px) + 9rem))' }}>
+        <footer className={`w-full shrink-0 md:snap-start relative z-20 pt-16 pb-48 md:py-20 px-6 md:px-24 border-t transition-colors duration-1000 ${isNight ? 'bg-[#09090b] border-white/10' : 'bg-[#f4f4f5] border-black/10'}`} style={{ paddingBottom: 'max(12rem, calc(env(safe-area-inset-bottom, 24px) + 9rem))' }}>
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1 md:col-span-2">
               <h2 className="text-3xl md:text-4xl font-black tracking-tighter uppercase mb-4">Tsvetkov Cars Club</h2>
@@ -423,7 +424,6 @@ export default function HeroSection() {
           </div>
         </footer>
 
-        </div>
       </div>
 
       {/* ── Плавающие мессенджеры — скрыты на мобиле когда открыта форма ── */}
@@ -454,12 +454,12 @@ export default function HeroSection() {
           {/* Десктопный фон — Glassmorphism матовое стекло с градиентом */}
           <div className={`hidden md:block absolute top-0 left-0 w-[55%] h-full z-0 backdrop-blur-md anim-bg ${
             isNight
-              ? 'bg-gradient-to-r from-black/65 via-black/45 to-transparent'
-              : 'bg-gradient-to-r from-white/70 via-white/50 to-transparent'
+              ? 'bg-gradient-to-r from-black/60 via-black/40 to-transparent'
+              : 'bg-gradient-to-r from-white/60 via-white/40 to-transparent'
           }`}></div>
 
           {/* Мобильный фон — Glassmorphism матовое стекло, силуэт машины красиво просвечивает */}
-          <div className={`md:hidden absolute top-0 left-0 w-full h-full z-0 ${isNight ? 'bg-black/70' : 'bg-white/70'} backdrop-blur-md`}></div>
+          <div className={`md:hidden absolute top-0 left-0 w-full h-full z-0 ${isNight ? 'bg-black/60' : 'bg-white/60'} backdrop-blur-md`}></div>
 
           {/* Контент формы — на мобиле скроллируемый блок на всю высоту */}
           <div
