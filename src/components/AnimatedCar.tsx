@@ -77,11 +77,12 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     } else {
       const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
       const dist = isMobile
-        ? (isNight ? 6.2 : 7.2)
+        ? (isNight ? 7.6 : 8.4)
         : (isNight ? 5.8 : 7.0);
-      const camY = isMobile ? 1.35 : 1.0;
-      targetCamPos.set(0, camY, dist);
-      targetLook.set(0, isMobile ? -0.22 : 0.2, 0);
+      const camX = isMobile ? -0.35 : 0.0;
+      const camY = isMobile ? 1.4 : 1.0;
+      targetCamPos.set(camX, camY, dist);
+      targetLook.set(isMobile ? 0.05 : 0.0, isMobile ? -0.22 : 0.2, 0);
     }
     
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
@@ -97,22 +98,24 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
 
   const shadowTexture = useMemo(() => {
     const canvas = document.createElement('canvas');
-    canvas.width = 256;
-    canvas.height = 256;
+    canvas.width = 512;
+    canvas.height = 512;
     const context = canvas.getContext('2d');
     if (context) {
-      const gradient = context.createRadialGradient(128, 128, 0, 128, 128, 128);
-      gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
-      gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.5)');
+      const gradient = context.createRadialGradient(256, 256, 20, 256, 256, 256);
+      gradient.addColorStop(0, 'rgba(0, 0, 0, 0.60)');
+      gradient.addColorStop(0.3, 'rgba(0, 0, 0, 0.30)');
+      gradient.addColorStop(0.65, 'rgba(0, 0, 0, 0.08)');
+      gradient.addColorStop(0.9, 'rgba(0, 0, 0, 0.01)');
       gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
       context.fillStyle = gradient;
-      context.fillRect(0, 0, 256, 256);
+      context.fillRect(0, 0, 512, 512);
     }
     return new THREE.CanvasTexture(canvas);
   }, []);
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const currentScale = isMobile ? 1.08 : 1.15;
+  const currentScale = isMobile ? 1.0 : 1.15;
 
   return (
     <group>
@@ -131,6 +134,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
         <group scale={currentScale}>
           <primitive object={scene} />
           
+          {/* Передние фары (в темной теме) */}
           {isNight && (
             <group>
               <primitive object={targetL} />
@@ -148,37 +152,38 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
                 color="#ffffff" distance={40}
                 target={targetR}
               />
-
-              {/* Задняя непрерывная светодиодная LED-полоса Porsche 911 (992) */}
-              <mesh position={[0, 0.74, 1.96]}>
-                <boxGeometry args={[1.24, 0.03, 0.03]} />
-                <meshBasicMaterial color="#ff1e1e" toneMapped={false} />
-              </mesh>
-              {/* Левый и правый акцентные блоки задних фонарей */}
-              <mesh position={[-0.58, 0.74, 1.96]}>
-                <boxGeometry args={[0.18, 0.045, 0.03]} />
-                <meshBasicMaterial color="#ff0000" toneMapped={false} />
-              </mesh>
-              <mesh position={[0.58, 0.74, 1.96]}>
-                <boxGeometry args={[0.18, 0.045, 0.03]} />
-                <meshBasicMaterial color="#ff0000" toneMapped={false} />
-              </mesh>
-              
-              {/* Мягкий красный свет от задних фонарей */}
-              <pointLight position={[0, 0.74, 2.02]} intensity={6} color="#ff2222" distance={3.5} />
             </group>
           )}
+
+          {/* Задние фонари Porsche 911 GT3 (яркие и горящие в ночи, четкие днем) */}
+          <group>
+            {/* Непрерывная задняя светодиодная LED-полоса */}
+            <mesh position={[0, 0.74, 1.96]}>
+              <boxGeometry args={[1.36, 0.035, 0.04]} />
+              <meshBasicMaterial color="#ff0022" toneMapped={false} />
+            </mesh>
+            {/* Левый и правый акцентные блоки задних фонарей */}
+            <mesh position={[-0.62, 0.74, 1.96]}>
+              <boxGeometry args={[0.22, 0.05, 0.04]} />
+              <meshBasicMaterial color="#ff0022" toneMapped={false} />
+            </mesh>
+            <mesh position={[0.62, 0.74, 1.96]}>
+              <boxGeometry args={[0.22, 0.05, 0.04]} />
+              <meshBasicMaterial color="#ff0022" toneMapped={false} />
+            </mesh>
+            
+            {/* Мощное точечное освещение задних фар */}
+            <pointLight position={[0, 0.74, 2.10]} intensity={isNight ? 45 : 20} color="#ff0022" distance={5} />
+            <pointLight position={[-0.6, 0.74, 2.05]} intensity={isNight ? 25 : 12} color="#ff0011" distance={3.5} />
+            <pointLight position={[0.6, 0.74, 2.05]} intensity={isNight ? 25 : 12} color="#ff0011" distance={3.5} />
+          </group>
         </group>
       </group>
 
+      {/* Мягкая реалистичная тень прямо под автомобилем */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.89, 0]}>
-        <planeGeometry args={[5, 10]} />
-        <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.9 : 0.7} depthWrite={false} />
-      </mesh>
-      
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[2, -0.895, 2]}>
-        <planeGeometry args={[8, 12]} />
-        <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.6 : 0.4} depthWrite={false} />
+        <planeGeometry args={[3.6, 5.6]} />
+        <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.75 : 0.40} depthWrite={false} />
       </mesh>
     </group>
   );

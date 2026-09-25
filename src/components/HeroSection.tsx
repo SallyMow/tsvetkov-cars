@@ -87,7 +87,7 @@ export default function HeroSection() {
     }`;
 
   return (
-    <main className={`relative w-full h-screen overflow-hidden transition-colors duration-1000 ${isNight ? 'bg-[#09090b] text-white' : 'bg-[#fcfcfc] text-zinc-900'}`}>
+    <main className={`relative w-full h-screen overflow-hidden transition-colors duration-1000 ${isNight ? 'bg-[#09090b] text-white' : 'bg-[#f4f4f5] text-zinc-900'}`}>
 
       <style>{`
         @keyframes sidebarReveal {
@@ -133,8 +133,8 @@ export default function HeroSection() {
         }
       `}</style>
 
-      {/* ── 3D Canvas ── */}
-      <div className="absolute top-0 left-0 w-full h-[50vh] md:h-screen z-0 pointer-events-none">
+      {/* ── 3D Canvas (полная высота без резких горизонтальных обрезов) ── */}
+      <div className="absolute top-0 left-0 w-full h-full md:h-screen z-0 pointer-events-none">
         <Canvas camera={{ position: [0, 1.5, 7.0], fov: 36 }}>
           <ambientLight intensity={isNight ? 0.3 : 0.6} />
           <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
@@ -171,8 +171,8 @@ export default function HeroSection() {
         style={{ height: '100dvh', touchAction: 'pan-y' }}
       >
 
-        {/* Главный экран — мобиле h-[44vh] → карточка услуг начинается сразу под авто; desktop — 100dvh */}
-        <section className="w-full h-[44vh] md:h-screen snap-start relative pointer-events-none">
+        {/* Главный экран — мобиле h-[46vh] → карточка услуг начинается сразу под авто; desktop — 100dvh */}
+        <section className="w-full h-[46vh] md:h-screen snap-start relative pointer-events-none">
           <div className="absolute top-[8vh] md:top-[10vh] left-0 w-full flex flex-col items-center px-4">
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.25)' }}>TSVETKOV CARS</h1>
             <p className="mt-3 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-medium opacity-80">Элитная доставка и аренда</p>
@@ -180,8 +180,8 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 1 */}
-        <section className="w-full snap-start md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-7 md:pt-0 pb-16 md:pb-0 min-h-[65vh] md:h-screen">
-          <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
+        <section className="w-full snap-start md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-6 md:pt-0 pb-12 md:pb-0 min-h-[58vh] md:h-screen">
+          <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-xl rounded-3xl ${isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">01 / Логистика</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Логистика под ключ</h2>
             <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Прямые контракты с дилерами. Бережная логистика в закрытых контейнерах. Полное страхование на всех этапах пути из Европы, США и Азии.</p>
@@ -192,8 +192,8 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 2 */}
-        <section className="w-full snap-start md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none pt-7 md:pt-0 pb-16 md:pb-0 min-h-[65vh] md:h-screen">
-          <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
+        <section className="w-full snap-start md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none pt-6 md:pt-0 pb-12 md:pb-0 min-h-[58vh] md:h-screen">
+          <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-xl rounded-3xl ${isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">02 / Оформление</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Таможенная очистка</h2>
             <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Берем на себя всю бюрократию. ЭПТС, СБКТС, утильсбор. Вы получаете автомобиль, полностью готовый к постановке на учет без скрытых платежей.</p>
@@ -204,8 +204,8 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 3 */}
-        <section className="w-full snap-start md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-7 md:pt-0 pb-16 md:pb-0 min-h-[65vh] md:h-screen">
-          <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
+        <section className="w-full snap-start md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-6 md:pt-0 pb-12 md:pb-0 min-h-[58vh] md:h-screen">
+          <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-xl rounded-3xl ${isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">03 / Подбор</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Эксклюзив</h2>
             <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Находим лимитированные серии и редкие комплектации по всему миру. Детальная проверка юридической истории и технического состояния.</p>
@@ -216,7 +216,7 @@ export default function HeroSection() {
         </section>
 
         {/* ── Блок «Как мы работаем» ── */}
-        <div className={`w-full snap-start transition-colors duration-1000 py-16 md:py-28 px-4 md:px-24 shadow-[0_-20px_50px_rgba(0,0,0,0.3)] ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        <div className={`w-full snap-start transition-colors duration-1000 py-16 md:py-28 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 md:gap-6 mb-10 md:mb-16">
               <div className="h-[2px] w-8 md:w-12 bg-[#ffb86c]"></div>
@@ -241,7 +241,7 @@ export default function HeroSection() {
         </div>
 
         {/* ── Блок «Гарантии» ── */}
-        <div className={`w-full snap-start transition-colors duration-1000 py-14 md:py-20 px-4 md:px-24 ${isNight ? 'bg-[#0d0d10]' : 'bg-white'}`}>
+        <div className={`w-full snap-start transition-colors duration-1000 py-14 md:py-20 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 md:gap-6 mb-8 md:mb-12">
               <div className="h-[2px] w-8 md:w-12 bg-[#ffb86c]"></div>
@@ -249,7 +249,7 @@ export default function HeroSection() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
               {guarantees.map((g, i) => (
-                <div key={i} className={`flex gap-4 md:gap-5 p-6 md:p-8 rounded-3xl border transition-colors duration-500 ${isNight ? 'border-white/8 bg-white/3 hover:border-[#ffb86c]/30' : 'border-black/6 bg-zinc-50 hover:border-black/15'}`}
+                <div key={i} className={`flex gap-4 md:gap-5 p-6 md:p-8 rounded-3xl border transition-colors duration-500 ${isNight ? 'border-white/8 bg-white/3 hover:border-[#ffb86c]/30' : 'border-black/6 bg-white hover:border-black/15'}`}
                   style={{ background: isNight ? 'rgba(255,255,255,0.03)' : undefined }}>
                   <div className="text-[#ffb86c] shrink-0 mt-0.5">{g.icon}</div>
                   <div>
@@ -263,7 +263,7 @@ export default function HeroSection() {
         </div>
 
         {/* Переход в каталог */}
-        <div className={`w-full snap-start transition-colors duration-1000 flex items-center justify-center py-24 md:py-40 px-4 ${isNight ? 'shadow-[0_-20px_50px_rgba(0,0,0,0.5)]' : 'shadow-[0_-20px_50px_rgba(0,0,0,0.05)]'} ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        <div className={`w-full snap-start transition-colors duration-1000 flex items-center justify-center py-24 md:py-40 px-4 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="text-center flex flex-col items-center">
             <h2 className="text-3xl md:text-6xl font-black uppercase tracking-tighter mb-4 md:mb-6">Готовы выбрать?</h2>
             <p className={`max-w-sm md:max-w-md text-sm font-medium mb-8 md:mb-10 px-2 ${isNight ? 'opacity-60' : 'opacity-70'}`}>
@@ -276,7 +276,7 @@ export default function HeroSection() {
         </div>
 
         {/* ── Футер ── */}
-        <footer className={`w-full snap-start py-20 px-10 md:px-24 border-t transition-colors duration-1000 ${isNight ? 'bg-[#09090b] border-white/10' : 'bg-[#f4f4f5] border-black/10'}`}>
+        <footer className={`w-full snap-start pt-16 pb-48 md:py-20 px-6 md:px-24 border-t transition-colors duration-1000 ${isNight ? 'bg-[#09090b] border-white/10' : 'bg-[#f4f4f5] border-black/10'}`} style={{ paddingBottom: 'max(12rem, calc(env(safe-area-inset-bottom, 24px) + 9rem))' }}>
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1 md:col-span-2">
               <h2 className="text-3xl md:text-4xl font-black tracking-tighter uppercase mb-4">Tsvetkov Cars Club</h2>
