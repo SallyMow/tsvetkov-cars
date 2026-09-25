@@ -74,6 +74,18 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     } else if (delayedService === 'Эксклюзивный подбор') {
       targetCamPos.set(4.0, 1.5, -4.5);
       targetLook.set(2.0, 0.2, 0);
+    } else if (delayedService === 'Прокат премиум-авто') {
+      targetCamPos.set(4.2, 0.8, 2.5);
+      targetLook.set(1.5, -0.1, 0);
+    } else if (delayedService === 'Детейлинг и защита') {
+      targetCamPos.set(-1.2, 0.6, 2.8);
+      targetLook.set(-0.5, 0.0, 0.5);
+    } else if (delayedService === 'Тюнинг и стайлинг') {
+      targetCamPos.set(-2.8, 0.4, -3.5);
+      targetLook.set(-1.0, -0.2, -1.0);
+    } else if (delayedService === 'Лизинг и Trade-In') {
+      targetCamPos.set(2.5, 3.2, 3.5);
+      targetLook.set(0.5, 0.2, 0);
     } else {
       const dist = isNight ? 5.8 : 7.0;
       targetCamPos.set(0, 1.0, dist);

@@ -122,8 +122,8 @@ export default function HeroSection() {
       `}</style>
 
       {/* ── 3D Canvas ── */}
-      <div className="absolute top-0 left-0 w-full h-[50vh] md:h-screen z-0 pointer-events-none">
-        <Canvas camera={{ position: [0, 1.5, 7.0], fov: 32 }}>
+      <div className="absolute top-0 left-0 w-full h-[50vh] md:h-screen z-0 pointer-events-none transform-gpu">
+        <Canvas dpr={[1, 1.5]} gl={{ powerPreference: 'high-performance', antialias: true }} camera={{ position: [0, 1.5, 7.0], fov: 32 }}>
           <ambientLight intensity={isNight ? 0.3 : 0.6} />
           <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
           <directionalLight position={[-6, 7, -2]} intensity={isNight ? 1.0 : 2.5} color={isNight ? '#e0f2fe' : '#ffffff'} />
@@ -155,11 +155,11 @@ export default function HeroSection() {
       {/* ── Скролл-контейнер ── */}
       <div
         id="main-scroll-container"
-        className={`relative z-10 w-full h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth transition-opacity duration-700 ${activeService ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 block'}`}
+        className={`relative z-10 w-full h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth transform-gpu will-change-transform transition-opacity duration-700 ${activeService ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 block'}`}
       >
 
         {/* Главный экран */}
-        <section className="w-full h-screen snap-center relative pointer-events-none">
+        <section className="w-full h-screen snap-center relative pointer-events-none transform-gpu">
           <div className="absolute top-[8vh] md:top-[10vh] left-0 w-full flex flex-col items-center px-4">
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl">TSVETKOV CARS</h1>
             <p className="mt-3 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-medium opacity-80">Элитная доставка и аренда</p>
@@ -167,7 +167,7 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 1 */}
-        <section className="w-full h-screen snap-center flex items-center justify-start px-4 md:px-24 pointer-events-none">
+        <section className="w-full h-screen snap-center flex items-center justify-start px-4 md:px-24 pointer-events-none transform-gpu">
           <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">01 / Логистика</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Логистика под ключ</h2>
@@ -179,7 +179,7 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 2 */}
-        <section className="w-full h-screen snap-center flex items-center justify-end px-4 md:px-24 pointer-events-none">
+        <section className="w-full h-screen snap-center flex items-center justify-end px-4 md:px-24 pointer-events-none transform-gpu">
           <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">02 / Оформление</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Таможенная очистка</h2>
@@ -191,12 +191,60 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 3 */}
-        <section className="w-full h-screen snap-center flex items-center justify-start px-4 md:px-24 pointer-events-none">
+        <section className="w-full h-screen snap-center flex items-center justify-start px-4 md:px-24 pointer-events-none transform-gpu">
           <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">03 / Подбор</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Эксклюзив</h2>
             <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Находим лимитированные серии и редкие комплектации по всему миру. Детальная проверка юридической истории и технического состояния.</p>
             <button onClick={() => setActiveService('Эксклюзивный подбор')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+              Выбрать услугу
+            </button>
+          </div>
+        </section>
+
+        {/* Услуга 4 — Аренда */}
+        <section className="w-full h-screen snap-center flex items-center justify-end px-4 md:px-24 pointer-events-none transform-gpu">
+          <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
+            <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">04 / Аренда</span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Прокат премиум-авто</h2>
+            <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Эксклюзивный парк автомобилей. Без скрытых условий. Подача машины в любую точку города за 60 минут.</p>
+            <button onClick={() => setActiveService('Прокат премиум-авто')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+              Выбрать услугу
+            </button>
+          </div>
+        </section>
+
+        {/* Услуга 5 — Обслуживание */}
+        <section className="w-full h-screen snap-center flex items-center justify-start px-4 md:px-24 pointer-events-none transform-gpu">
+          <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
+            <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">05 / Обслуживание</span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Детейлинг и защита</h2>
+            <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Премиальная оклейка кузова полиуретановой бронепленкой, нанесение керамики и полный детейлинг-комплекс.</p>
+            <button onClick={() => setActiveService('Детейлинг и защита')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+              Выбрать услугу
+            </button>
+          </div>
+        </section>
+
+        {/* Услуга 6 — Дооснащение */}
+        <section className="w-full h-screen snap-center flex items-center justify-end px-4 md:px-24 pointer-events-none transform-gpu">
+          <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
+            <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">06 / Дооснащение</span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Тюнинг и стайлинг</h2>
+            <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Установка аэродинамических обвесов, подбор кованых дисков, чип-тюнинг и эксклюзивный перешив салона.</p>
+            <button onClick={() => setActiveService('Тюнинг и стайлинг')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+              Выбрать услугу
+            </button>
+          </div>
+        </section>
+
+        {/* Услуга 7 — Финансы */}
+        <section className="w-full h-screen snap-center flex items-center justify-start px-4 md:px-24 pointer-events-none transform-gpu">
+          <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
+            <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">07 / Финансы</span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Лизинг и Trade-In</h2>
+            <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Выгодные программы лизинга для юрлиц и обмен вашего текущего автомобиля на новый на прозрачных условиях.</p>
+            <button onClick={() => setActiveService('Лизинг и Trade-In')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
               Выбрать услугу
             </button>
           </div>
