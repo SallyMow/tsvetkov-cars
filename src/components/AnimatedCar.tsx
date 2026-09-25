@@ -51,11 +51,13 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       progress = scrollTop / maxScroll;
     }
 
-    if (carGroup.current && !delayedService) {
-      const startAngle = Math.PI * 0.75; 
-      const targetRotationY = startAngle - (progress * Math.PI * 2);
-      carGroup.current.rotation.y = THREE.MathUtils.damp(carGroup.current.rotation.y, targetRotationY, 4, delta);
-      carGroup.current.position.y = -0.9;
+    if (carGroup.current) {
+      carGroup.current.position.y = -0.5;
+      if (!delayedService) {
+        const startAngle = Math.PI * 0.75; 
+        const targetRotationY = startAngle - (progress * Math.PI * 2);
+        carGroup.current.rotation.y = THREE.MathUtils.damp(carGroup.current.rotation.y, targetRotationY, 4, delta);
+      }
     }
 
     if (isNight && neonGroup.current) {
@@ -66,30 +68,30 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     const targetLook = new THREE.Vector3();
 
     if (delayedService === 'Логистика под ключ') {
-      targetCamPos.set(-2.5, 0.5, 4.5);
-      targetLook.set(-1.5, -0.2, 0); 
+      targetCamPos.set(-2.5, 0.9, 4.5);
+      targetLook.set(-1.5, 0.2, 0); 
     } else if (delayedService === 'Таможенная очистка') {
-      targetCamPos.set(-1.0, 3.8, 2.8); 
-      targetLook.set(-2.0, -0.2, 0);
+      targetCamPos.set(-1.0, 4.2, 2.8); 
+      targetLook.set(-2.0, 0.2, 0);
     } else if (delayedService === 'Эксклюзивный подбор') {
-      targetCamPos.set(4.0, 1.5, -4.5);
-      targetLook.set(2.0, 0.2, 0);
+      targetCamPos.set(4.0, 1.9, -4.5);
+      targetLook.set(2.0, 0.6, 0);
     } else if (delayedService === 'Прокат премиум-авто') {
-      targetCamPos.set(4.2, 0.8, 2.5);
-      targetLook.set(1.5, -0.1, 0);
+      targetCamPos.set(4.2, 1.2, 2.5);
+      targetLook.set(1.5, 0.3, 0);
     } else if (delayedService === 'Детейлинг и защита') {
-      targetCamPos.set(-1.2, 0.6, 2.8);
-      targetLook.set(-0.5, 0.0, 0.5);
+      targetCamPos.set(-1.2, 1.0, 2.8);
+      targetLook.set(-0.5, 0.4, 0.5);
     } else if (delayedService === 'Тюнинг и стайлинг') {
-      targetCamPos.set(-2.8, 0.4, -3.5);
-      targetLook.set(-1.0, -0.2, -1.0);
+      targetCamPos.set(-2.8, 0.8, -3.5);
+      targetLook.set(-1.0, 0.2, -1.0);
     } else if (delayedService === 'Лизинг и Trade-In') {
-      targetCamPos.set(2.5, 3.2, 3.5);
-      targetLook.set(0.5, 0.2, 0);
+      targetCamPos.set(2.5, 3.6, 3.5);
+      targetLook.set(0.5, 0.6, 0);
     } else {
-      const dist = isNight ? 5.8 : 7.0;
-      targetCamPos.set(0, 1.0, dist);
-      targetLook.set(0, 0.2, 0);
+      const dist = 7.0;
+      targetCamPos.set(0, 0.9, dist);
+      targetLook.set(0, 0.0, 0);
     }
     
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
@@ -167,12 +169,12 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
         )}
       </group>
 
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.89, 0]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.49, 0]}>
         <planeGeometry args={[5, 10]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.9 : 0.7} depthWrite={false} />
       </mesh>
       
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[2, -0.895, 2]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[2, -0.495, 2]}>
         <planeGeometry args={[8, 12]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.6 : 0.4} depthWrite={false} />
       </mesh>

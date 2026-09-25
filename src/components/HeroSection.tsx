@@ -122,7 +122,7 @@ export default function HeroSection() {
       `}</style>
 
       {/* ── 3D Canvas ── */}
-      <div className="absolute top-0 left-0 w-full h-[50vh] md:h-screen z-0 pointer-events-none transform-gpu">
+      <div className="absolute top-0 left-0 w-full h-full md:h-screen z-0 pointer-events-none transform-gpu">
         <Canvas dpr={[1, 1.5]} gl={{ powerPreference: 'high-performance', antialias: true }} camera={{ position: [0, 1.5, 7.0], fov: 32 }}>
           <ambientLight intensity={isNight ? 0.3 : 0.6} />
           <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
