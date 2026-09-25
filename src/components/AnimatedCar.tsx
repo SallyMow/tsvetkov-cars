@@ -59,7 +59,8 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     if (carGroup.current) {
       const startAngle = Math.PI * 0.75; 
       const targetRotationY = startAngle - (progress * Math.PI * 2);
-      carGroup.current.rotation.y = THREE.MathUtils.damp(carGroup.current.rotation.y, targetRotationY, 4, delta);
+      const rotDamping = isMobile ? 3.5 : 2.2;
+      carGroup.current.rotation.y = THREE.MathUtils.damp(carGroup.current.rotation.y, targetRotationY, rotDamping, delta);
       carGroup.current.position.y = -0.9;
     }
 
@@ -67,14 +68,55 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       neonGroup.current.rotation.y += delta * 0.4;
     }
 
-    const dist = isMobile ? 6.2 : 6.4;
-    const camY = isMobile ? 0.95 : 1.0;
-    const targetCamPos = new THREE.Vector3(0, camY, dist);
-    const targetLook = new THREE.Vector3(0, isMobile ? 0.05 : 0.15, 0);
+    const targetCamPos = new THREE.Vector3();
+    const targetLook = new THREE.Vector3();
+
+    if (!isMobile && activeService) {
+      // Киноэффект: эффектный подлет камеры к деталям машины при клике на услугу на ПК
+      if (activeService === 'Логистика под ключ') {
+        // Фокус на переднее крыло, колесный диск и воздухозаборники
+        targetCamPos.set(1.4, 0.45, 3.4);
+        targetLook.set(0.4, -0.15, 0.2);
+      } else if (activeService === 'Таможенная очистка') {
+        // Фокус на капот, фары и герб Porsche крупным планом
+        targetCamPos.set(1.1, 0.8, 3.2);
+        targetLook.set(0.2, 0.05, 0.4);
+      } else if (activeService === 'Эксклюзивный подбор') {
+        // Динамичный ракурс три четверти спереди
+        targetCamPos.set(1.8, 0.65, 3.0);
+        targetLook.set(0.5, 0.0, 0);
+      } else if (activeService === 'Прокат премиум-авто') {
+        // Задняя часть: спойлер GT3 и горящая LED-полоса фонарей
+        targetCamPos.set(1.3, 0.85, -3.2);
+        targetLook.set(0.3, 0.1, 0);
+      } else if (activeService === 'Детейлинг и защита') {
+        // Макро-ракурс на зеркальный глянец кузова и изгибы профиля
+        targetCamPos.set(1.6, 0.4, 2.7);
+        targetLook.set(0.5, -0.1, 0.2);
+      } else if (activeService === 'Тюнинг и стайлинг') {
+        // Спортивный низкий ракурс на диффузор и сдвоенный выхлоп
+        targetCamPos.set(1.4, 0.35, -3.0);
+        targetLook.set(0.4, -0.2, 0);
+      } else if (activeService === 'Лизинг и Trade-In') {
+        // Полный солидный профиль кузова
+        targetCamPos.set(2.2, 0.6, 3.0);
+        targetLook.set(0.6, 0.0, 0);
+      } else {
+        targetCamPos.set(1.5, 0.65, 3.5);
+        targetLook.set(0.4, 0.0, 0);
+      }
+    } else {
+      // Стандартный ракурс: на ПК машина крупная (dist 4.8), на мобиле 6.2
+      const dist = isMobile ? 6.2 : 4.8;
+      const camY = isMobile ? 0.95 : 0.75;
+      targetCamPos.set(0, camY, dist);
+      targetLook.set(0, isMobile ? 0.05 : 0.05, 0);
+    }
     
-    state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
-    state.camera.position.y = THREE.MathUtils.damp(state.camera.position.y, targetCamPos.y, 2.0, delta);
-    state.camera.position.z = THREE.MathUtils.damp(state.camera.position.z, targetCamPos.z, 2.0, delta);
+    const camDamping = (!isMobile && activeService) ? 2.6 : 2.2;
+    state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, camDamping, delta);
+    state.camera.position.y = THREE.MathUtils.damp(state.camera.position.y, targetCamPos.y, camDamping, delta);
+    state.camera.position.z = THREE.MathUtils.damp(state.camera.position.z, targetCamPos.z, camDamping, delta);
     
     currentLookAt.current.x = THREE.MathUtils.damp(currentLookAt.current.x, targetLook.x, 2.5, delta);
     currentLookAt.current.y = THREE.MathUtils.damp(currentLookAt.current.y, targetLook.y, 2.5, delta);
@@ -101,7 +143,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     return new THREE.CanvasTexture(canvas);
   }, []);
 
-  const currentScale = isMobile ? 1.02 : 1.15;
+  const currentScale = isMobile ? 1.02 : 1.36;
 
   return (
     <group>
