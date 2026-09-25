@@ -80,17 +80,17 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     const targetLook = new THREE.Vector3();
 
     if (delayedService === 'Логистика под ключ') {
-      targetCamPos.set(-2.5, 0.5, 4.5);
-      targetLook.set(-1.5, -0.2, 0); 
+      targetCamPos.set(isMobile ? 0 : -2.5, isMobile ? 0.9 : 0.5, isMobile ? 5.6 : 4.5);
+      targetLook.set(isMobile ? 0 : -1.5, -0.2, 0); 
     } else if (delayedService === 'Таможенная очистка') {
-      targetCamPos.set(-1.0, 3.8, 2.8); 
-      targetLook.set(-2.0, -0.2, 0);
+      targetCamPos.set(isMobile ? 0 : -1.0, isMobile ? 2.8 : 3.8, isMobile ? 4.2 : 2.8); 
+      targetLook.set(isMobile ? 0 : -2.0, -0.2, 0);
     } else if (delayedService === 'Эксклюзивный подбор') {
-      targetCamPos.set(4.0, 1.5, -4.5);
-      targetLook.set(2.0, 0.2, 0);
+      targetCamPos.set(isMobile ? 0 : 4.0, isMobile ? 1.1 : 1.5, isMobile ? -5.2 : -4.5);
+      targetLook.set(isMobile ? 0 : 2.0, 0.2, 0);
     } else {
       const dist = isMobile
-        ? (isNight ? 6.5 : 7.2)
+        ? (isNight ? 6.0 : 6.6)
         : (isNight ? 5.8 : 7.0);
       const camY = isMobile ? 0.95 : 1.0;
       targetCamPos.set(0, camY, dist);
@@ -126,7 +126,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     return new THREE.CanvasTexture(canvas);
   }, []);
 
-  const currentScale = isMobile ? 0.92 : 1.15;
+  const currentScale = isMobile ? 1.02 : 1.15;
 
   return (
     <group>
@@ -193,7 +193,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
 
       {/* Мягкая реалистичная тень прямо под автомобилем */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.89, 0]}>
-        <planeGeometry args={[isMobile ? 3.3 : 3.6, isMobile ? 5.2 : 5.6]} />
+        <planeGeometry args={[isMobile ? 3.5 : 3.6, isMobile ? 5.4 : 5.6]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.75 : 0.40} depthWrite={false} />
       </mesh>
     </group>

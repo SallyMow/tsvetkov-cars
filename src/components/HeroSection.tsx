@@ -156,15 +156,15 @@ export default function HeroSection() {
       {/* ── Скролл-контейнер ── */}
       <div
         id="main-scroll-container"
-        className={`relative z-10 w-full overflow-y-auto overflow-x-hidden snap-none md:snap-y md:snap-mandatory scroll-smooth transition-opacity duration-700 ${activeService ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 block'}`}
+        className={`relative z-10 w-full overflow-y-auto overflow-x-hidden snap-none md:snap-y md:snap-mandatory scroll-smooth ${activeService ? 'pointer-events-none overflow-hidden' : ''}`}
         style={{ height: '100dvh', touchAction: 'pan-y' }}
       >
 
         {/* ── Родительский контейнер: Главный экран + Услуги (со sticky 3D машиной на мобильном) ── */}
         <div className="relative w-full">
 
-          {/* 3D Canvas: на мобильном sticky top-[7vh] h-[38vh], на десктопе fixed fullscreen */}
-          <div className="sticky top-[7vh] md:fixed md:inset-0 w-full h-[38vh] md:h-screen pointer-events-none z-0">
+          {/* 3D Canvas: на мобильном sticky top-[7vh] h-[38vh] (при открытой форме заявки - fixed inset-0), на десктопе fixed fullscreen */}
+          <div className={`${activeService ? 'fixed inset-0 w-full h-full' : 'sticky top-[7vh] w-full h-[38vh]'} md:fixed md:inset-0 md:w-full md:h-screen pointer-events-none z-0 transition-all duration-700`}>
             <Canvas camera={{ position: [0, 1.5, 7.0], fov: 36 }}>
               <ambientLight intensity={isNight ? 0.3 : 0.6} />
               <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
@@ -174,56 +174,61 @@ export default function HeroSection() {
             </Canvas>
           </div>
 
-          {/* Главный экран: заголовок */}
-          <section className="w-full relative flex flex-col items-center pt-16 md:pt-0 md:h-screen md:snap-start pointer-events-none -mt-[38vh] md:mt-0 pb-4 md:pb-0">
-            <div className="relative md:absolute md:top-[10vh] left-0 w-full flex flex-col items-center px-4 z-10 mb-2 md:mb-0">
-              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.25)' }}>TSVETKOV CARS</h1>
-              <p className="mt-2 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-medium opacity-80">Элитная доставка и аренда</p>
-            </div>
-            {/* Распорка высоты под 3D-машину на мобильном */}
-            <div className="w-full h-[34vh] md:hidden"></div>
-          </section>
+          {/* Контент страниц — плавно скрывается при открытии формы заявки */}
+          <div className={`transition-opacity duration-500 ${activeService ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+            {/* Главный экран: заголовок */}
+            <section className="w-full relative flex flex-col items-center pt-16 md:pt-0 md:h-screen md:snap-start pointer-events-none -mt-[38vh] md:mt-0 pb-4 md:pb-0">
+              <div className="relative md:absolute md:top-[10vh] left-0 w-full flex flex-col items-center px-4 z-10 mb-2 md:mb-0">
+                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.25)' }}>TSVETKOV CARS</h1>
+                <p className="mt-2 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-medium opacity-80">Элитная доставка и аренда</p>
+              </div>
+              {/* Распорка высоты под 3D-машину на мобильном */}
+              <div className="w-full h-[34vh] md:hidden"></div>
+            </section>
 
-          {/* Услуга 1 */}
-          <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-            <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
-              <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">01 / Логистика</span>
-              <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Логистика под ключ</h2>
-              <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Прямые контракты с дилерами. Бережная логистика в закрытых контейнерах. Полное страхование на всех этапах пути из Европы, США и Азии.</p>
-              <button onClick={() => setActiveService('Логистика под ключ')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
-                Выбрать услугу
-              </button>
-            </div>
-          </section>
+            {/* Услуга 1 */}
+            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
+                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">01 / Логистика</span>
+                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Логистика под ключ</h2>
+                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Прямые контракты с дилерами. Бережная логистика в закрытых контейнерах. Полное страхование на всех этапах пути из Европы, США и Азии.</p>
+                <button onClick={() => setActiveService('Логистика под ключ')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+                  Выбрать услугу
+                </button>
+              </div>
+            </section>
 
-          {/* Услуга 2 */}
-          <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-            <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
-              <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">02 / Оформление</span>
-              <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Таможенная очистка</h2>
-              <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Берем на себя всю бюрократию. ЭПТС, СБКТС, утильсбор. Вы получаете автомобиль, полностью готовый к постановке на учет без скрытых платежей.</p>
-              <button onClick={() => setActiveService('Таможенная очистка')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
-                Выбрать услугу
-              </button>
-            </div>
-          </section>
+            {/* Услуга 2 */}
+            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
+                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">02 / Оформление</span>
+                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Таможенная очистка</h2>
+                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Берем на себя всю бюрократию. ЭПТС, СБКТС, утильсбор. Вы получаете автомобиль, полностью готовый к постановке на учет без скрытых платежей.</p>
+                <button onClick={() => setActiveService('Таможенная очистка')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+                  Выбрать услугу
+                </button>
+              </div>
+            </section>
 
-          {/* Услуга 3 */}
-          <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
-            <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
-              <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">03 / Подбор</span>
-              <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Эксклюзив</h2>
-              <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Находим лимитированные серии и редкие комплектации по всему миру. Детальная проверка юридической истории и технического состояния.</p>
-              <button onClick={() => setActiveService('Эксклюзивный подбор')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
-                Выбрать услугу
-              </button>
-            </div>
-          </section>
+            {/* Услуга 3 */}
+            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
+                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">03 / Подбор</span>
+                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Эксклюзив</h2>
+                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Находим лимитированные серии и редкие комплектации по всему миру. Детальная проверка юридической истории и технического состояния.</p>
+                <button onClick={() => setActiveService('Эксклюзивный подбор')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+                  Выбрать услугу
+                </button>
+              </div>
+            </section>
+          </div>
 
         </div>
 
-        {/* ── Блок «Как мы работаем» ── */}
-        <div className={`w-full snap-start relative z-10 transition-colors duration-1000 py-16 md:py-28 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        {/* ── Нижние секции сайта (скрываются при открытой форме) ── */}
+        <div className={`transition-opacity duration-500 ${activeService ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+          {/* ── Блок «Как мы работаем» ── */}
+          <div className={`w-full snap-start relative z-10 transition-colors duration-1000 py-16 md:py-28 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 md:gap-6 mb-10 md:mb-16">
               <div className="h-[2px] w-8 md:w-12 bg-[#ffb86c]"></div>
@@ -344,6 +349,7 @@ export default function HeroSection() {
           </div>
         </footer>
 
+        </div>
       </div>
 
       {/* ── Плавающие мессенджеры — скрыты на мобиле когда открыта форма ── */}
@@ -371,10 +377,11 @@ export default function HeroSection() {
       {/* ── Оверлей с формой заявки ── */}
       {activeService && (
         <div className="fixed top-0 left-0 w-full h-full z-50 pointer-events-none flex items-stretch md:items-center">
-          {/* Фон — на мобиле полная ширина и высокая непрозрачность */}
-          <div className={`absolute top-0 left-0 w-full md:w-[50%] h-full bg-gradient-to-r ${isNight ? 'from-[#09090b] via-[#09090b]/95' : 'from-[#fcfcfc] via-[#fcfcfc]/97'} to-transparent z-0 anim-bg md:opacity-100`}></div>
-          {/* Дополнительный мобильный фон (полная ширина, блокирует 3D) */}
-          <div className={`absolute top-0 left-0 w-full h-full md:hidden z-0 ${isNight ? 'bg-[#09090b]/90' : 'bg-[#fcfcfc]/92'} backdrop-blur-sm`}></div>
+          {/* Десктопный фон — градиент на левые 50% */}
+          <div className={`hidden md:block absolute top-0 left-0 w-[50%] h-full bg-gradient-to-r ${isNight ? 'from-[#09090b] via-[#09090b]/95' : 'from-[#fcfcfc] via-[#fcfcfc]/97'} to-transparent z-0 anim-bg`}></div>
+
+          {/* Мобильный фон — Glassmorphism матовое стекло, силуэт машины красиво просвечивает */}
+          <div className={`md:hidden absolute top-0 left-0 w-full h-full z-0 ${isNight ? 'bg-black/70' : 'bg-white/70'} backdrop-blur-md`}></div>
 
           {/* Контент формы — на мобиле скроллируемый блок на всю высоту */}
           <div
