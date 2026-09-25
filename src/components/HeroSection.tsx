@@ -119,6 +119,18 @@ export default function HeroSection() {
         .anim-success { animation: successPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .messenger-btn { transition: transform 0.2s ease, box-shadow 0.2s ease; }
         .messenger-btn:hover { transform: scale(1.12); }
+
+        /* iOS touch/scroll fix: R3F sets touch-action:none on <canvas> which
+           suppresses pan-y gesture for the whole stacking context on Safari.
+           Result: swipe does nothing until user taps first.
+           Fix: re-enable pan-y on scroll container and override canvas. */
+        #main-scroll-container {
+          touch-action: pan-y;
+          -webkit-overflow-scrolling: touch;
+        }
+        #main-scroll-container canvas {
+          touch-action: pan-y !important;
+        }
       `}</style>
 
       {/* ── 3D Canvas ── */}
@@ -156,20 +168,14 @@ export default function HeroSection() {
       <div
         id="main-scroll-container"
         className={`relative z-10 w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth transition-opacity duration-700 ${activeService ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 block'}`}
-        style={{ height: '100dvh' }}
+        style={{ height: '100dvh', touchAction: 'pan-y' }}
       >
 
-        {/* Главный экран */}
-        <section className="w-full snap-center relative pointer-events-none" style={{ height: '100dvh' }}>
+        {/* Главный экран — мобиле 57dvh → сервис-1 виден снизу; desktop — 100dvh */}
+        <section className="w-full h-[57dvh] md:h-screen snap-start relative pointer-events-none">
           <div className="absolute top-[8vh] md:top-[10vh] left-0 w-full flex flex-col items-center px-4">
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.25)' }}>TSVETKOV CARS</h1>
             <p className="mt-3 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-medium opacity-80">Элитная доставка и аренда</p>
-          </div>
-          {/* Подсказка скролла на мобиле */}
-          <div className="absolute bottom-6 left-0 w-full flex justify-center md:hidden pointer-events-none">
-            <svg className={`w-6 h-6 opacity-30 animate-bounce ${isNight ? 'text-white' : 'text-black'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
           </div>
         </section>
 
@@ -460,6 +466,13 @@ export default function HeroSection() {
                   </div>
                 </form>
               )}
+
+              {/* ── Брендовый футер формы ── */}
+              <div className={`mt-10 pt-5 border-t ${isNight ? 'border-white/8' : 'border-black/8'}`}>
+                <p className={`text-[10px] font-black tracking-[0.35em] uppercase text-center ${isNight ? 'text-white/25' : 'text-zinc-400/80'}`}>
+                  TSVETKOV CARS
+                </p>
+              </div>
             </div>
           </div>
         </div>

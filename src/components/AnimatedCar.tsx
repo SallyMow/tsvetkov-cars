@@ -77,11 +77,11 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     } else {
       const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
       const dist = isMobile
-        ? (isNight ? 9.5 : 11.0)
+        ? (isNight ? 8.2 : 9.5)
         : (isNight ? 5.8 : 7.0);
       const camY = isMobile ? 1.6 : 1.0;
       targetCamPos.set(0, camY, dist);
-      targetLook.set(0, isMobile ? -0.2 : 0.2, 0);
+      targetLook.set(0, isMobile ? -0.3 : 0.2, 0);
     }
     
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
