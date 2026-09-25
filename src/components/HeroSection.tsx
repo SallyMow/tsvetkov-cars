@@ -128,7 +128,7 @@ export default function HeroSection() {
           <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
           <directionalLight position={[-6, 7, -2]} intensity={isNight ? 1.0 : 2.5} color={isNight ? '#e0f2fe' : '#ffffff'} />
           <Environment preset={isNight ? 'night' : 'city'} environmentIntensity={isNight ? 0.2 : 0.8} />
-          <AnimatedCar isNight={isNight} activeService={activeService} />
+          <AnimatedCar isNight={isNight} theme={isNight ? 'dark' : 'light'} activeService={activeService} />
         </Canvas>
       </div>
 
