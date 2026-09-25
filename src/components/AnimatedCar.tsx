@@ -40,7 +40,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     }
   }, [activeService]);
 
-  // Чистая линейная анимация: при смене темы машина мягко делает шаг вперед строго по продольной оси капота (-Z)
+  // Однонаправленная анимация позиции ДЕНЬ / НОЧЬ (без yoyo/возврата)
   useEffect(() => {
     if (isFirstMount.current) {
       isFirstMount.current = false;
@@ -49,17 +49,11 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
 
     if (carBodyRef.current) {
       gsap.killTweensOf(carBodyRef.current.position);
-      gsap.timeline()
-        .to(carBodyRef.current.position, {
-          z: -0.15,
-          duration: 0.35,
-          ease: 'power1.out',
-        })
-        .to(carBodyRef.current.position, {
-          z: 0,
-          duration: 0.45,
-          ease: 'power1.inOut',
-        });
+      gsap.to(carBodyRef.current.position, {
+        z: isNight ? -0.15 : 0,
+        duration: 0.7,
+        ease: 'power2.out',
+      });
     }
   }, [isNight]);
   
@@ -160,7 +154,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       )}
 
       <group ref={carGroup}>
-        <group ref={carBodyRef}>
+        <group ref={carBodyRef} position={[0, 0, isNight ? -0.15 : 0]}>
           <primitive object={scene} scale={1.15} />
           
           {isNight && (
