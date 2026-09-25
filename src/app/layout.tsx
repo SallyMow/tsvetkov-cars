@@ -52,7 +52,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru" className="dark">
-      <body className={`${inter.variable} font-sans bg-zinc-950 text-white antialiased`}>
+      <body className={`${inter.variable} font-sans bg-zinc-950 text-white antialiased min-h-screen overflow-x-hidden md:overflow-y-auto`}>
         {children}
       </body>
     </html>

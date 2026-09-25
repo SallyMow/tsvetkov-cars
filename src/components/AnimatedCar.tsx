@@ -41,19 +41,19 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
 
   useFrame((state, delta) => {
     const scrollContainer = document.getElementById('main-scroll-container');
-    let progress = 0;
+    const scrollY = (typeof window !== 'undefined' ? (window.pageYOffset || window.scrollY) : 0) || (scrollContainer ? scrollContainer.scrollTop : 0);
+    const scrollHeight = (typeof document !== 'undefined' ? document.documentElement.scrollHeight : 0) || (scrollContainer ? scrollContainer.scrollHeight : 0);
+    const clientHeight = (typeof window !== 'undefined' ? window.innerHeight : 0) || (scrollContainer ? scrollContainer.clientHeight : 0);
     
-    if (scrollContainer) {
-      const scrollTop = scrollContainer.scrollTop;
-      if (isMobile) {
-        // На мобиле 7 карточек услуг занимают расширенный диапазон скролла
-        const mobileActiveRange = Math.min(scrollContainer.scrollHeight - scrollContainer.clientHeight, window.innerHeight * 4.2);
-        progress = Math.min(1.2, scrollTop / Math.max(1, mobileActiveRange));
-      } else {
-        // На десктопе 7 секций услуг занимают диапазон скролла 7 * innerHeight
-        const desktopActiveRange = window.innerHeight * 7;
-        progress = Math.min(1.0, scrollTop / Math.max(1, desktopActiveRange));
-      }
+    let progress = 0;
+    if (isMobile) {
+      // На мобиле 7 карточек услуг занимают расширенный диапазон скролла
+      const mobileActiveRange = Math.min(Math.max(1, scrollHeight - clientHeight), window.innerHeight * 4.2);
+      progress = Math.min(1.2, scrollY / Math.max(1, mobileActiveRange));
+    } else {
+      // На десктопе 7 секций услуг занимают диапазон скролла 7 * innerHeight
+      const desktopActiveRange = window.innerHeight * 7;
+      progress = Math.min(1.0, scrollY / Math.max(1, desktopActiveRange));
     }
 
     if (carGroup.current) {

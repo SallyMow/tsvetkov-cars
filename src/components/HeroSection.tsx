@@ -50,6 +50,18 @@ export default function HeroSection() {
   const [isNight, setIsNight] = useState(false);
   const [activeService, setActiveService] = useState<string | null>(null);
 
+  // Блокировка скролла body только когда открыта форма заявки
+  React.useEffect(() => {
+    if (activeService) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeService]);
+
   // Форма заявки
   const [formName, setFormName] = useState('');
   const [formPhone, setFormPhone] = useState('');
@@ -87,7 +99,7 @@ export default function HeroSection() {
     }`;
 
   return (
-    <main className={`relative w-full h-screen overflow-hidden transition-colors duration-1000 ${isNight ? 'bg-[#09090b] text-white' : 'bg-[#f4f4f5] text-zinc-900'}`}>
+    <main className={`relative w-full min-h-screen md:overflow-x-hidden md:overflow-y-auto transition-colors duration-1000 ${isNight ? 'bg-[#09090b] text-white' : 'bg-[#f4f4f5] text-zinc-900'}`}>
 
       <style>{`
         @keyframes sidebarReveal {
@@ -120,16 +132,16 @@ export default function HeroSection() {
         .messenger-btn { transition: transform 0.2s ease, box-shadow 0.2s ease; }
         .messenger-btn:hover { transform: scale(1.12); }
 
-        /* iOS touch/scroll fix: R3F sets touch-action:none on <canvas> which
-           suppresses pan-y gesture for the whole stacking context on Safari.
-           Result: swipe does nothing until user taps first.
-           Fix: re-enable pan-y on scroll container and override canvas. */
+        /* Исключаем захват событий скролла 3D-канвасом */
+        .canvas-shield,
+        .canvas-shield *,
+        .canvas-shield canvas {
+          pointer-events: none !important;
+        }
+
         #main-scroll-container {
           touch-action: pan-y;
           -webkit-overflow-scrolling: touch;
-        }
-        #main-scroll-container canvas {
-          touch-action: pan-y !important;
         }
       `}</style>
 
@@ -156,16 +168,16 @@ export default function HeroSection() {
       {/* ── Скролл-контейнер ── */}
       <div
         id="main-scroll-container"
-        className={`relative z-10 w-full overflow-y-auto overflow-x-hidden scroll-smooth ${activeService ? 'pointer-events-none overflow-hidden' : ''}`}
-        style={{ height: '100dvh', touchAction: 'pan-y' }}
+        className={`relative z-10 w-full min-h-screen overflow-x-hidden scroll-smooth ${activeService ? 'pointer-events-none' : ''}`}
+        style={{ touchAction: 'pan-y' }}
       >
 
         {/* ── Родительский контейнер: Главный экран + Услуги (со sticky 3D машиной на мобильном) ── */}
         <div className="relative w-full">
 
           {/* 3D Canvas: на мобильном sticky top-[7vh] h-[38vh], на десктопе fixed fullscreen */}
-          <div className="sticky top-[7vh] md:fixed md:inset-0 w-full h-[38vh] md:h-screen pointer-events-none z-0">
-            <Canvas camera={{ position: [0, 1.5, 7.0], fov: 36 }}>
+          <div className="sticky top-[7vh] md:fixed md:inset-0 w-full h-[38vh] md:h-screen pointer-events-none z-0 canvas-shield">
+            <Canvas camera={{ position: [0, 1.5, 7.0], fov: 36 }} style={{ pointerEvents: 'none' }}>
               <ambientLight intensity={isNight ? 0.3 : 0.6} />
               <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
               <directionalLight position={[-6, 7, -2]} intensity={isNight ? 1.0 : 2.5} color={isNight ? '#e0f2fe' : '#ffffff'} />
