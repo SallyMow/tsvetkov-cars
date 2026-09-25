@@ -16,7 +16,6 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
   const { scene } = useGLTF('/porsche/scene.gltf');
   const carGroup = useRef<THREE.Group>(null);
   const neonGroup = useRef<THREE.Group>(null);
-  const [delayedService, setDelayedService] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -35,15 +34,6 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       }
     });
   }, [scene]);
-
-  useEffect(() => {
-    if (activeService) {
-      const timer = setTimeout(() => setDelayedService(activeService), 300);
-      return () => clearTimeout(timer);
-    } else {
-      setDelayedService(null);
-    }
-  }, [activeService]);
   
   const targetL = useMemo(() => { const t = new THREE.Object3D(); t.position.set(0.78, 0.82, -10); return t; }, []);
   const targetR = useMemo(() => { const t = new THREE.Object3D(); t.position.set(-0.78, 0.82, -10); return t; }, []);
@@ -53,7 +43,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     const scrollContainer = document.getElementById('main-scroll-container');
     let progress = 0;
     
-    if (scrollContainer && !delayedService) {
+    if (scrollContainer) {
       const scrollTop = scrollContainer.scrollTop;
       if (isMobile) {
         // На мобиле карточки услуг занимают диапазон от 0 до ~1500px
@@ -65,7 +55,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       }
     }
 
-    if (carGroup.current && !delayedService) {
+    if (carGroup.current) {
       const startAngle = Math.PI * 0.75; 
       const targetRotationY = startAngle - (progress * Math.PI * 2);
       carGroup.current.rotation.y = THREE.MathUtils.damp(carGroup.current.rotation.y, targetRotationY, 4, delta);
@@ -76,26 +66,12 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       neonGroup.current.rotation.y += delta * 0.4;
     }
 
-    const targetCamPos = new THREE.Vector3();
-    const targetLook = new THREE.Vector3();
-
-    if (delayedService === 'Логистика под ключ') {
-      targetCamPos.set(isMobile ? 0 : -2.5, isMobile ? 0.9 : 0.5, isMobile ? 5.6 : 4.5);
-      targetLook.set(isMobile ? 0 : -1.5, -0.2, 0); 
-    } else if (delayedService === 'Таможенная очистка') {
-      targetCamPos.set(isMobile ? 0 : -1.0, isMobile ? 2.8 : 3.8, isMobile ? 4.2 : 2.8); 
-      targetLook.set(isMobile ? 0 : -2.0, -0.2, 0);
-    } else if (delayedService === 'Эксклюзивный подбор') {
-      targetCamPos.set(isMobile ? 0 : 4.0, isMobile ? 1.1 : 1.5, isMobile ? -5.2 : -4.5);
-      targetLook.set(isMobile ? 0 : 2.0, 0.2, 0);
-    } else {
-      const dist = isMobile
-        ? (isNight ? 6.0 : 6.6)
-        : (isNight ? 5.8 : 7.0);
-      const camY = isMobile ? 0.95 : 1.0;
-      targetCamPos.set(0, camY, dist);
-      targetLook.set(0, isMobile ? 0.05 : 0.2, 0);
-    }
+    const dist = isMobile
+      ? (isNight ? 6.0 : 6.6)
+      : (isNight ? 5.8 : 7.0);
+    const camY = isMobile ? 0.95 : 1.0;
+    const targetCamPos = new THREE.Vector3(0, camY, dist);
+    const targetLook = new THREE.Vector3(0, isMobile ? 0.05 : 0.2, 0);
     
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
     state.camera.position.y = THREE.MathUtils.damp(state.camera.position.y, targetCamPos.y, 2.0, delta);

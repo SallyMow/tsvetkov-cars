@@ -163,8 +163,8 @@ export default function HeroSection() {
         {/* ── Родительский контейнер: Главный экран + Услуги (со sticky 3D машиной на мобильном) ── */}
         <div className="relative w-full">
 
-          {/* 3D Canvas: на мобильном sticky top-[7vh] h-[38vh] (при открытой форме заявки - fixed inset-0), на десктопе fixed fullscreen */}
-          <div className={`${activeService ? 'fixed inset-0 w-full h-full' : 'sticky top-[7vh] w-full h-[38vh]'} md:fixed md:inset-0 md:w-full md:h-screen pointer-events-none z-0 transition-all duration-700`}>
+          {/* 3D Canvas: на мобильном sticky top-[7vh] h-[38vh], на десктопе fixed fullscreen */}
+          <div className="sticky top-[7vh] md:fixed md:inset-0 w-full h-[38vh] md:h-screen pointer-events-none z-0">
             <Canvas camera={{ position: [0, 1.5, 7.0], fov: 36 }}>
               <ambientLight intensity={isNight ? 0.3 : 0.6} />
               <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
