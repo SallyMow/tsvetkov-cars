@@ -156,7 +156,7 @@ export default function HeroSection() {
       {/* ── Скролл-контейнер ── */}
       <div
         id="main-scroll-container"
-        className={`relative z-10 w-full overflow-y-auto overflow-x-hidden snap-none md:snap-y md:snap-mandatory scroll-smooth ${activeService ? 'pointer-events-none overflow-hidden' : ''}`}
+        className={`relative z-10 w-full overflow-y-auto overflow-x-hidden scroll-smooth ${activeService ? 'pointer-events-none overflow-hidden' : ''}`}
         style={{ height: '100dvh', touchAction: 'pan-y' }}
       >
 
@@ -177,10 +177,20 @@ export default function HeroSection() {
           {/* Контент страниц — плавно скрывается при открытии формы заявки */}
           <div className={`transition-opacity duration-500 ${activeService ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
             {/* Главный экран: заголовок */}
-            <section className="w-full relative flex flex-col items-center pt-16 md:pt-0 md:h-screen md:snap-start pointer-events-none -mt-[38vh] md:mt-0 pb-4 md:pb-0">
-              <div className="relative md:absolute md:top-[10vh] left-0 w-full flex flex-col items-center px-4 z-10 mb-2 md:mb-0">
-                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.25)' }}>TSVETKOV CARS</h1>
-                <p className="mt-2 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-medium opacity-80">Элитная доставка и аренда</p>
+            <section className="w-full relative flex flex-col items-center pt-16 md:pt-0 md:h-screen pointer-events-none -mt-[38vh] md:mt-0 pb-4 md:pb-0 z-30">
+              <div className="relative md:absolute md:top-[10vh] left-0 w-full flex flex-col items-center px-4 z-30 mb-2 md:mb-0 pointer-events-none">
+                <h1
+                  className={`text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl select-none ${isNight ? 'text-white' : 'text-zinc-950'}`}
+                  style={{ textShadow: isNight ? '0 4px 24px rgba(0,0,0,0.6)' : '0 2px 16px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.7)' }}
+                >
+                  TSVETKOV CARS
+                </h1>
+                <p
+                  className={`mt-2 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-bold ${isNight ? 'text-white/80' : 'text-zinc-800'}`}
+                  style={{ textShadow: isNight ? '0 2px 10px rgba(0,0,0,0.6)' : '0 1px 8px rgba(255,255,255,0.8)' }}
+                >
+                  Элитная доставка и аренда
+                </p>
               </div>
               {/* Распорка высоты под 3D-машину на мобильном */}
               <div className="w-full h-[34vh] md:hidden"></div>
@@ -276,7 +286,7 @@ export default function HeroSection() {
         {/* ── Нижние секции сайта (скрываются при открытой форме) ── */}
         <div className={`transition-opacity duration-500 ${activeService ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           {/* ── Блок «Как мы работаем» ── */}
-          <div className={`w-full snap-start relative z-10 transition-colors duration-1000 py-16 md:py-28 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+          <div className={`w-full relative z-20 transition-colors duration-1000 py-16 md:py-28 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 md:gap-6 mb-10 md:mb-16">
               <div className="h-[2px] w-8 md:w-12 bg-[#ffb86c]"></div>
@@ -301,7 +311,7 @@ export default function HeroSection() {
         </div>
 
         {/* ── Блок «Гарантии» ── */}
-        <div className={`w-full snap-start relative z-10 transition-colors duration-1000 py-14 md:py-20 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        <div className={`w-full relative z-20 transition-colors duration-1000 py-14 md:py-20 px-4 md:px-24 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 md:gap-6 mb-8 md:mb-12">
               <div className="h-[2px] w-8 md:w-12 bg-[#ffb86c]"></div>
@@ -323,7 +333,7 @@ export default function HeroSection() {
         </div>
 
         {/* Переход в каталог */}
-        <div className={`w-full snap-start relative z-10 transition-colors duration-1000 flex items-center justify-center py-24 md:py-40 px-4 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
+        <div className={`w-full relative z-20 transition-colors duration-1000 flex items-center justify-center py-24 md:py-40 px-4 ${isNight ? 'bg-[#09090b]' : 'bg-[#f4f4f5]'}`}>
           <div className="text-center flex flex-col items-center">
             <h2 className="text-3xl md:text-6xl font-black uppercase tracking-tighter mb-4 md:mb-6">Готовы выбрать?</h2>
             <p className={`max-w-sm md:max-w-md text-sm font-medium mb-8 md:mb-10 px-2 ${isNight ? 'opacity-60' : 'opacity-70'}`}>
@@ -336,7 +346,7 @@ export default function HeroSection() {
         </div>
 
         {/* ── Футер ── */}
-        <footer className={`w-full snap-start relative z-10 pt-16 pb-48 md:py-20 px-6 md:px-24 border-t transition-colors duration-1000 ${isNight ? 'bg-[#09090b] border-white/10' : 'bg-[#f4f4f5] border-black/10'}`} style={{ paddingBottom: 'max(12rem, calc(env(safe-area-inset-bottom, 24px) + 9rem))' }}>
+        <footer className={`w-full relative z-20 pt-16 pb-48 md:py-20 px-6 md:px-24 border-t transition-colors duration-1000 ${isNight ? 'bg-[#09090b] border-white/10' : 'bg-[#f4f4f5] border-black/10'}`} style={{ paddingBottom: 'max(12rem, calc(env(safe-area-inset-bottom, 24px) + 9rem))' }}>
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1 md:col-span-2">
               <h2 className="text-3xl md:text-4xl font-black tracking-tighter uppercase mb-4">Tsvetkov Cars Club</h2>

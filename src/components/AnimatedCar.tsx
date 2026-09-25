@@ -50,8 +50,9 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
         const mobileActiveRange = Math.min(scrollContainer.scrollHeight - scrollContainer.clientHeight, window.innerHeight * 4.2);
         progress = Math.min(1.2, scrollTop / Math.max(1, mobileActiveRange));
       } else {
-        const maxScroll = Math.max(1, scrollContainer.scrollHeight - scrollContainer.clientHeight);
-        progress = scrollTop / maxScroll;
+        // На десктопе 7 секций услуг занимают диапазон скролла 7 * innerHeight
+        const desktopActiveRange = window.innerHeight * 7;
+        progress = Math.min(1.0, scrollTop / Math.max(1, desktopActiveRange));
       }
     }
 
@@ -66,12 +67,10 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       neonGroup.current.rotation.y += delta * 0.4;
     }
 
-    const dist = isMobile
-      ? (isNight ? 6.0 : 6.6)
-      : (isNight ? 5.8 : 7.0);
+    const dist = isMobile ? 6.2 : 6.4;
     const camY = isMobile ? 0.95 : 1.0;
     const targetCamPos = new THREE.Vector3(0, camY, dist);
-    const targetLook = new THREE.Vector3(0, isMobile ? 0.05 : 0.2, 0);
+    const targetLook = new THREE.Vector3(0, isMobile ? 0.05 : 0.15, 0);
     
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
     state.camera.position.y = THREE.MathUtils.damp(state.camera.position.y, targetCamPos.y, 2.0, delta);
