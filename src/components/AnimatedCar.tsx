@@ -40,10 +40,13 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     }
   }, [activeService]);
 
-  // Однонаправленная анимация позиции ДЕНЬ / НОЧЬ (без yoyo/возврата)
+  // Плавный благородный выезд (1.4с, power2.out) без yoyo
   useEffect(() => {
     if (isFirstMount.current) {
       isFirstMount.current = false;
+      if (carBodyRef.current) {
+        carBodyRef.current.position.set(0, 0, isNight ? -0.15 : 0);
+      }
       return;
     }
 
@@ -51,7 +54,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       gsap.killTweensOf(carBodyRef.current.position);
       gsap.to(carBodyRef.current.position, {
         z: isNight ? -0.15 : 0,
-        duration: 0.7,
+        duration: 1.4,
         ease: 'power2.out',
       });
     }
@@ -154,7 +157,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       )}
 
       <group ref={carGroup}>
-        <group ref={carBodyRef} position={[0, 0, isNight ? -0.15 : 0]}>
+        <group ref={carBodyRef}>
           <primitive object={scene} scale={1.15} />
           
           {isNight && (
