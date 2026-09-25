@@ -46,8 +46,8 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     if (scrollContainer) {
       const scrollTop = scrollContainer.scrollTop;
       if (isMobile) {
-        // На мобиле карточки услуг занимают диапазон от 0 до ~1500px
-        const mobileActiveRange = Math.min(scrollContainer.scrollHeight - scrollContainer.clientHeight, window.innerHeight * 2.2);
+        // На мобиле 7 карточек услуг занимают расширенный диапазон скролла
+        const mobileActiveRange = Math.min(scrollContainer.scrollHeight - scrollContainer.clientHeight, window.innerHeight * 4.2);
         progress = Math.min(1.2, scrollTop / Math.max(1, mobileActiveRange));
       } else {
         const maxScroll = Math.max(1, scrollContainer.scrollHeight - scrollContainer.clientHeight);

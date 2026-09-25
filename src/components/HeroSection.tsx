@@ -221,6 +221,54 @@ export default function HeroSection() {
                 </button>
               </div>
             </section>
+
+            {/* Услуга 4 — Аренда */}
+            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
+                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">04 / Аренда</span>
+                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Прокат премиум-авто</h2>
+                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Эксклюзивный парк автомобилей. Без скрытых условий. Подача машины в любую точку города за 60 минут.</p>
+                <button onClick={() => setActiveService('Прокат премиум-авто')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+                  Выбрать услугу
+                </button>
+              </div>
+            </section>
+
+            {/* Услуга 5 — Обслуживание */}
+            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
+                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">05 / Обслуживание</span>
+                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Детейлинг и защита</h2>
+                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Премиальная оклейка кузова полиуретановой бронепленкой, нанесение керамики и полный детейлинг-комплекс для вашего авто.</p>
+                <button onClick={() => setActiveService('Детейлинг и защита')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+                  Выбрать услугу
+                </button>
+              </div>
+            </section>
+
+            {/* Услуга 6 — Дооснащение */}
+            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
+                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">06 / Дооснащение</span>
+                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Тюнинг и стайлинг</h2>
+                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Установка аэродинамических обвесов, подбор кованых дисков, чип-тюнинг и эксклюзивный перешив салона.</p>
+                <button onClick={() => setActiveService('Тюнинг и стайлинг')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+                  Выбрать услугу
+                </button>
+              </div>
+            </section>
+
+            {/* Услуга 7 — Финансы */}
+            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+              <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
+                <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">07 / Финансы</span>
+                <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Лизинг и Trade-In</h2>
+                <p className="opacity-90 leading-relaxed text-sm md:text-base mb-6 md:mb-8">Выгодные программы лизинга для юрлиц и обмен вашего текущего автомобиля на новый на прозрачных условиях.</p>
+                <button onClick={() => setActiveService('Лизинг и Trade-In')} className={`px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer ${isNight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'}`}>
+                  Выбрать услугу
+                </button>
+              </div>
+            </section>
           </div>
 
         </div>
@@ -317,12 +365,15 @@ export default function HeroSection() {
             </div>
 
             <div>
-              <h4 className={`font-bold uppercase tracking-widest text-xs mb-6 ${isNight ? 'opacity-80' : 'opacity-60'}`}>Навигация</h4>
-              <ul className={`space-y-4 text-sm font-medium ${isNight ? 'opacity-60' : 'opacity-80'}`}>
-                <li><Link href="/catalog" className="hover:opacity-100 transition-opacity">Каталог автомобилей</Link></li>
-                <li className="hover:opacity-100 cursor-pointer transition-opacity">Услуги логистики</li>
-                <li className="hover:opacity-100 cursor-pointer transition-opacity">Таможенное оформление</li>
-                <li className="hover:opacity-100 cursor-pointer transition-opacity">Автомобили с аукционов</li>
+              <h4 className={`font-bold uppercase tracking-widest text-xs mb-6 ${isNight ? 'opacity-80' : 'opacity-60'}`}>Услуги и сервис</h4>
+              <ul className={`space-y-3 text-sm font-medium ${isNight ? 'opacity-60' : 'opacity-80'}`}>
+                <li><Link href="/catalog" className="hover:opacity-100 transition-opacity">Каталог авто в наличии</Link></li>
+                <li onClick={() => setActiveService('Логистика под ключ')} className="hover:opacity-100 cursor-pointer transition-opacity">Логистика под ключ</li>
+                <li onClick={() => setActiveService('Таможенная очистка')} className="hover:opacity-100 cursor-pointer transition-opacity">Таможенное оформление</li>
+                <li onClick={() => setActiveService('Прокат премиум-авто')} className="hover:opacity-100 cursor-pointer transition-opacity">Прокат премиум-авто</li>
+                <li onClick={() => setActiveService('Детейлинг и защита')} className="hover:opacity-100 cursor-pointer transition-opacity">Детейлинг и защита</li>
+                <li onClick={() => setActiveService('Тюнинг и стайлинг')} className="hover:opacity-100 cursor-pointer transition-opacity">Тюнинг и стайлинг</li>
+                <li onClick={() => setActiveService('Лизинг и Trade-In')} className="hover:opacity-100 cursor-pointer transition-opacity">Лизинг и Trade-In</li>
               </ul>
             </div>
 
@@ -426,6 +477,22 @@ export default function HeroSection() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="anim-item-3 flex flex-col gap-5">
+                  <div>
+                    <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Интересующая услуга</label>
+                    <select
+                      value={activeService}
+                      onChange={e => setActiveService(e.target.value)}
+                      className={`${inputClass(isNight)} cursor-pointer`}
+                    >
+                      <option value="Логистика под ключ" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>01 / Логистика под ключ</option>
+                      <option value="Таможенная очистка" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>02 / Таможенная очистка</option>
+                      <option value="Эксклюзивный подбор" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>03 / Эксклюзивный подбор</option>
+                      <option value="Прокат премиум-авто" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>04 / Аренда (Прокат премиум-авто)</option>
+                      <option value="Детейлинг и защита" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>05 / Детейлинг и защита (Обслуживание)</option>
+                      <option value="Тюнинг и стайлинг" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>06 / Тюнинг и стайлинг (Дооснащение)</option>
+                      <option value="Лизинг и Trade-In" className={isNight ? 'bg-zinc-900 text-white' : 'bg-white text-black'}>07 / Лизинг и Trade-In (Финансы)</option>
+                    </select>
+                  </div>
                   <div>
                     <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Ваше имя</label>
                     <input
