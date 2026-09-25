@@ -55,8 +55,14 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     
     if (scrollContainer && !delayedService) {
       const scrollTop = scrollContainer.scrollTop;
-      const maxScroll = Math.max(1, scrollContainer.scrollHeight - scrollContainer.clientHeight);
-      progress = scrollTop / maxScroll;
+      if (isMobile) {
+        // На мобиле карточки услуг занимают диапазон от 0 до ~1500px
+        const mobileActiveRange = Math.min(scrollContainer.scrollHeight - scrollContainer.clientHeight, window.innerHeight * 2.2);
+        progress = Math.min(1.2, scrollTop / Math.max(1, mobileActiveRange));
+      } else {
+        const maxScroll = Math.max(1, scrollContainer.scrollHeight - scrollContainer.clientHeight);
+        progress = scrollTop / maxScroll;
+      }
     }
 
     if (carGroup.current && !delayedService) {
@@ -84,11 +90,11 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       targetLook.set(2.0, 0.2, 0);
     } else {
       const dist = isMobile
-        ? (isNight ? 10.5 : 11.5)
+        ? (isNight ? 6.5 : 7.2)
         : (isNight ? 5.8 : 7.0);
-      const camY = isMobile ? 1.15 : 1.0;
+      const camY = isMobile ? 0.95 : 1.0;
       targetCamPos.set(0, camY, dist);
-      targetLook.set(0, isMobile ? -0.15 : 0.2, 0);
+      targetLook.set(0, isMobile ? 0.05 : 0.2, 0);
     }
     
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
@@ -120,7 +126,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     return new THREE.CanvasTexture(canvas);
   }, []);
 
-  const currentScale = isMobile ? 0.65 : 1.15;
+  const currentScale = isMobile ? 0.92 : 1.15;
 
   return (
     <group>
@@ -187,7 +193,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
 
       {/* Мягкая реалистичная тень прямо под автомобилем */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.89, 0]}>
-        <planeGeometry args={[isMobile ? 2.6 : 3.6, isMobile ? 4.0 : 5.6]} />
+        <planeGeometry args={[isMobile ? 3.3 : 3.6, isMobile ? 5.2 : 5.6]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.75 : 0.40} depthWrite={false} />
       </mesh>
     </group>
