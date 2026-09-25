@@ -17,6 +17,14 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
   const carGroup = useRef<THREE.Group>(null);
   const neonGroup = useRef<THREE.Group>(null);
   const [delayedService, setDelayedService] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // ПРИНУДИТЕЛЬНО ВЫКЛЮЧАЕМ СКРЫТЫЕ ТЕНИ МОДЕЛИ (ЭТО УБЬЕТ ЛАГИ)
   useEffect(() => {
@@ -75,14 +83,12 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       targetCamPos.set(4.0, 1.5, -4.5);
       targetLook.set(2.0, 0.2, 0);
     } else {
-      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
       const dist = isMobile
-        ? (isNight ? 7.6 : 8.4)
+        ? (isNight ? 10.5 : 11.5)
         : (isNight ? 5.8 : 7.0);
-      const camX = isMobile ? -0.35 : 0.0;
-      const camY = isMobile ? 1.4 : 1.0;
-      targetCamPos.set(camX, camY, dist);
-      targetLook.set(isMobile ? 0.05 : 0.0, isMobile ? -0.22 : 0.2, 0);
+      const camY = isMobile ? 1.15 : 1.0;
+      targetCamPos.set(0, camY, dist);
+      targetLook.set(0, isMobile ? -0.15 : 0.2, 0);
     }
     
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
@@ -114,8 +120,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     return new THREE.CanvasTexture(canvas);
   }, []);
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const currentScale = isMobile ? 1.0 : 1.15;
+  const currentScale = isMobile ? 0.65 : 1.15;
 
   return (
     <group>
@@ -182,7 +187,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
 
       {/* Мягкая реалистичная тень прямо под автомобилем */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.89, 0]}>
-        <planeGeometry args={[3.6, 5.6]} />
+        <planeGeometry args={[isMobile ? 2.6 : 3.6, isMobile ? 4.0 : 5.6]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.75 : 0.40} depthWrite={false} />
       </mesh>
     </group>
