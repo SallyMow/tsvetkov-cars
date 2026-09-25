@@ -175,8 +175,8 @@ export default function HeroSection() {
         {/* ── Родительский контейнер: Главный экран + Услуги (со sticky 3D машиной на мобильном) ── */}
         <div className="relative w-full">
 
-          {/* 3D Canvas: на мобильном sticky top-[7vh] h-[38vh], на десктопе fixed fullscreen */}
-          <div className="sticky top-[7vh] md:fixed md:inset-0 w-full h-[38vh] md:h-screen pointer-events-none z-0 canvas-shield">
+          {/* 3D Canvas: на мобильном sticky top-[7vh] h-[38vh], на десктопе sticky top-0 h-[80vh] */}
+          <div className="sticky top-[7vh] md:top-0 w-full h-[38vh] md:h-[80vh] pointer-events-none md:pointer-events-none z-0 canvas-shield">
             <Canvas camera={{ position: [0, 1.5, 7.0], fov: 36 }} style={{ pointerEvents: 'none' }}>
               <ambientLight intensity={isNight ? 0.3 : 0.6} />
               <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
@@ -189,8 +189,8 @@ export default function HeroSection() {
           {/* Контент страниц — плавно скрывается при открытии формы заявки */}
           <div className={`transition-opacity duration-500 ${activeService ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
             {/* Главный экран: заголовок */}
-            <section className="w-full relative flex flex-col items-center pt-16 md:pt-0 md:h-screen pointer-events-none -mt-[38vh] md:mt-0 pb-4 md:pb-0 z-30">
-              <div className="relative md:absolute md:top-[10vh] left-0 w-full flex flex-col items-center px-4 z-30 mb-2 md:mb-0 pointer-events-none">
+            <section className="w-full relative flex flex-col items-center pt-16 md:pt-0 pointer-events-none -mt-[38vh] md:-mt-[80vh] h-[38vh] md:h-[80vh] z-30">
+              <div className="relative md:absolute md:top-[8vh] left-0 w-full flex flex-col items-center px-4 z-30 mb-2 md:mb-0 pointer-events-none">
                 <h1
                   className={`text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl select-none ${isNight ? 'text-white' : 'text-zinc-950'}`}
                   style={{ textShadow: isNight ? '0 4px 24px rgba(0,0,0,0.6)' : '0 2px 16px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.7)' }}
@@ -204,12 +204,10 @@ export default function HeroSection() {
                   Элитная доставка и аренда
                 </p>
               </div>
-              {/* Распорка высоты под 3D-машину на мобильном */}
-              <div className="w-full h-[34vh] md:hidden"></div>
             </section>
 
             {/* Услуга 1 */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pt-4 md:py-16 pb-12 md:pb-16 min-h-[50vh] md:min-h-[70vh] relative z-10 md:relative md:z-10 md:pointer-events-auto">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">01 / Логистика</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Логистика под ключ</h2>
@@ -221,7 +219,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 2 */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-12 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pt-4 md:py-16 pb-12 md:pb-16 min-h-[50vh] md:min-h-[70vh] relative z-10 md:relative md:z-10 md:pointer-events-auto">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">02 / Оформление</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Таможенная очистка</h2>
@@ -233,7 +231,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 3 */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pt-4 md:py-16 pb-16 md:pb-16 min-h-[50vh] md:min-h-[70vh] relative z-10 md:relative md:z-10 md:pointer-events-auto">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">03 / Подбор</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Эксклюзив</h2>
@@ -245,7 +243,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 4 — Аренда */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pt-4 md:py-16 pb-16 md:pb-16 min-h-[50vh] md:min-h-[70vh] relative z-10 md:relative md:z-10 md:pointer-events-auto">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">04 / Аренда</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Прокат премиум-авто</h2>
@@ -257,7 +255,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 5 — Обслуживание */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pt-4 md:py-16 pb-16 md:pb-16 min-h-[50vh] md:min-h-[70vh] relative z-10 md:relative md:z-10 md:pointer-events-auto">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">05 / Обслуживание</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Детейлинг и защита</h2>
@@ -269,7 +267,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 6 — Дооснащение */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pt-4 md:py-16 pb-16 md:pb-16 min-h-[50vh] md:min-h-[70vh] relative z-10 md:relative md:z-10 md:pointer-events-auto">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">06 / Дооснащение</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Тюнинг и стайлинг</h2>
@@ -281,7 +279,7 @@ export default function HeroSection() {
             </section>
 
             {/* Услуга 7 — Финансы */}
-            <section className="w-full md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-4 md:pt-0 pb-16 md:pb-0 min-h-[50vh] md:h-screen relative z-10">
+            <section className="w-full flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pt-4 md:py-16 pb-16 md:pb-16 min-h-[50vh] md:min-h-[70vh] relative z-10 md:relative md:z-10 md:pointer-events-auto">
               <div className={`p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/95 text-white border border-white/10' : 'bg-white/95 text-black border border-black/5'} backdrop-blur-md`}>
                 <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">07 / Финансы</span>
                 <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 tracking-tight">Лизинг и Trade-In</h2>
