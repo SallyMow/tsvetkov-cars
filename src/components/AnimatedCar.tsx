@@ -7,6 +7,60 @@ import * as THREE from 'three';
 
 useGLTF.preload('/porsche/scene.gltf');
 
+interface CameraTarget {
+  pos: [number, number, number];
+  look: [number, number, number];
+}
+
+const SERVICE_CAMERA_TARGETS: Record<string, CameraTarget> = {
+  // Опция 1: Логистика -> Камера подлетает к лобовому стеклу и капоту крупным планом
+  'Логистика под ключ': {
+    pos: [-1.4, 1.3, 3.2],
+    look: [0.1, 0.15, 0.6],
+  },
+  // Опция 2: Таможня -> Камера подлетает к задней части, спойлеру и горящим LED-фарам
+  'Таможенная очистка': {
+    pos: [2.6, 0.9, -3.2],
+    look: [0.1, 0.2, -0.6],
+  },
+  // Опция 3: Эксклюзивный подбор (Аудит) -> Вид сбоку на колесный диск, тормозные суппорты и дверь
+  'Эксклюзивный подбор': {
+    pos: [3.4, 0.5, 0.8],
+    look: [0.2, -0.15, 0.0],
+  },
+  // Опция 4: Аренда -> Эффектный вид сверху под углом (Cinematic high-angle overview)
+  'Прокат премиум-авто': {
+    pos: [-2.6, 2.8, 2.0],
+    look: [0.3, 0.0, 0.0],
+  },
+  // Опция 5: Детейлинг и защита -> Макро-ракурс на идеальный зеркальный глянец кузова и переднее крыло
+  'Детейлинг и защита': {
+    pos: [1.3, 0.35, 2.2],
+    look: [0.3, -0.1, 0.4],
+  },
+  // Опция 6: Тюнинг и стайлинг -> Агрессивный низкий ракурс на карбоновый диффузор и выхлоп
+  'Тюнинг и стайлинг': {
+    pos: [0.8, 0.25, -2.8],
+    look: [0.0, -0.25, -0.8],
+  },
+  // Опция 7: Лизинг и Trade-In -> Солидный презентационный ракурс три четверти сбоку
+  'Лизинг и Trade-In': {
+    pos: [3.8, 1.1, 2.4],
+    look: [0.5, 0.05, 0.0],
+  },
+};
+
+function getCameraTarget(service: string | null): CameraTarget | null {
+  if (!service) return null;
+  const s = service.toLowerCase();
+  for (const [key, target] of Object.entries(SERVICE_CAMERA_TARGETS)) {
+    if (s.includes(key.toLowerCase()) || key.toLowerCase().includes(s)) {
+      return target;
+    }
+  }
+  return SERVICE_CAMERA_TARGETS['Логистика под ключ'];
+}
+
 interface AnimatedCarProps {
   isNight: boolean;
   activeService: string | null;
@@ -71,56 +125,28 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     const targetCamPos = new THREE.Vector3();
     const targetLook = new THREE.Vector3();
 
-    if (!isMobile && activeService) {
-      // Киноэффект: эффектный подлет камеры к деталям машины при клике на услугу на ПК
-      if (activeService === 'Логистика под ключ') {
-        // Фокус на переднее крыло, колесный диск и воздухозаборники
-        targetCamPos.set(1.4, 0.40, 2.9);
-        targetLook.set(0.3, -0.15, 0.2);
-      } else if (activeService === 'Таможенная очистка') {
-        // Фокус на капот, фары и герб Porsche крупным планом
-        targetCamPos.set(1.1, 0.70, 2.7);
-        targetLook.set(0.2, 0.05, 0.3);
-      } else if (activeService === 'Эксклюзивный подбор') {
-        // Динамичный ракурс три четверти спереди
-        targetCamPos.set(1.7, 0.55, 2.6);
-        targetLook.set(0.4, 0.0, 0);
-      } else if (activeService === 'Прокат премиум-авто') {
-        // Задняя часть: спойлер GT3 и горящая LED-полоса фонарей
-        targetCamPos.set(1.3, 0.75, -2.7);
-        targetLook.set(0.3, 0.1, 0);
-      } else if (activeService === 'Детейлинг и защита') {
-        // Макро-ракурс на зеркальный глянец кузова и изгибы профиля
-        targetCamPos.set(1.5, 0.35, 2.3);
-        targetLook.set(0.4, -0.1, 0.2);
-      } else if (activeService === 'Тюнинг и стайлинг') {
-        // Спортивный низкий ракурс на диффузор и сдвоенный выхлоп
-        targetCamPos.set(1.3, 0.28, -2.6);
-        targetLook.set(0.3, -0.2, 0);
-      } else if (activeService === 'Лизинг и Trade-In') {
-        // Полный солидный профиль кузова
-        targetCamPos.set(1.9, 0.50, 2.6);
-        targetLook.set(0.5, 0.0, 0);
-      } else {
-        targetCamPos.set(1.5, 0.65, 3.0);
-        targetLook.set(0.4, 0.0, 0);
-      }
+    const serviceTarget = getCameraTarget(activeService);
+
+    if (!isMobile && serviceTarget) {
+      // Киноэффект: эффектный подлет камеры к деталям машины при клике на конкретную услугу
+      targetCamPos.set(...serviceTarget.pos);
+      targetLook.set(...serviceTarget.look);
     } else {
-      // Стандартный ракурс: на ПК машина крупная, солидная и центрированная
-      const dist = isMobile ? 6.2 : 4.3;
-      const camY = isMobile ? 0.95 : 0.65;
+      // Стандартный ракурс: на ПК машина крупная, солидная, полностью помещается в экран
+      const dist = isMobile ? 6.2 : 5.4;
+      const camY = isMobile ? 0.95 : 0.80;
       targetCamPos.set(0, camY, dist);
       targetLook.set(0, 0.05, 0);
     }
     
-    const camDamping = (!isMobile && activeService) ? 2.8 : 2.2;
+    const camDamping = (!isMobile && activeService) ? 3.0 : 2.2;
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, camDamping, delta);
     state.camera.position.y = THREE.MathUtils.damp(state.camera.position.y, targetCamPos.y, camDamping, delta);
     state.camera.position.z = THREE.MathUtils.damp(state.camera.position.z, targetCamPos.z, camDamping, delta);
     
-    currentLookAt.current.x = THREE.MathUtils.damp(currentLookAt.current.x, targetLook.x, 2.5, delta);
-    currentLookAt.current.y = THREE.MathUtils.damp(currentLookAt.current.y, targetLook.y, 2.5, delta);
-    currentLookAt.current.z = THREE.MathUtils.damp(currentLookAt.current.z, targetLook.z, 2.5, delta);
+    currentLookAt.current.x = THREE.MathUtils.damp(currentLookAt.current.x, targetLook.x, 2.8, delta);
+    currentLookAt.current.y = THREE.MathUtils.damp(currentLookAt.current.y, targetLook.y, 2.8, delta);
+    currentLookAt.current.z = THREE.MathUtils.damp(currentLookAt.current.z, targetLook.z, 2.8, delta);
     
     state.camera.lookAt(currentLookAt.current);
   });
@@ -143,7 +169,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     return new THREE.CanvasTexture(canvas);
   }, []);
 
-  const currentScale = isMobile ? 1.05 : 1.70;
+  const currentScale = isMobile ? 1.02 : 1.26;
 
   return (
     <group>
