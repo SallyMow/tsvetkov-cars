@@ -4,6 +4,7 @@ import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
+import gsap from 'gsap';
 
 useGLTF.preload('/porsche/scene.gltf');
 
@@ -18,6 +19,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
   const carBodyRef = useRef<THREE.Group>(null);
   const neonGroup = useRef<THREE.Group>(null);
   const [delayedService, setDelayedService] = useState<string | null>(null);
+  const isFirstMount = useRef(true);
 
   // ПРИНУДИТЕЛЬНО ВЫКЛЮЧАЕМ СКРЫТЫЕ ТЕНИ МОДЕЛИ (ЭТО УБЬЕТ ЛАГИ)
   useEffect(() => {
@@ -37,28 +39,33 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       setDelayedService(null);
     }
   }, [activeService]);
+
+  // Чистая линейная анимация: при смене темы машина мягко делает шаг вперед строго по продольной оси капота (-Z)
+  useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+
+    if (carBodyRef.current) {
+      gsap.killTweensOf(carBodyRef.current.position);
+      gsap.timeline()
+        .to(carBodyRef.current.position, {
+          z: -0.15,
+          duration: 0.35,
+          ease: 'power1.out',
+        })
+        .to(carBodyRef.current.position, {
+          z: 0,
+          duration: 0.45,
+          ease: 'power1.inOut',
+        });
+    }
+  }, [isNight]);
   
   const targetL = useMemo(() => { const t = new THREE.Object3D(); t.position.set(0.78, 0.82, -10); return t; }, []);
   const targetR = useMemo(() => { const t = new THREE.Object3D(); t.position.set(-0.78, 0.82, -10); return t; }, []);
   const currentLookAt = useRef(new THREE.Vector3(0, -0.2, 0));
-
-  const themeAnim = useRef({
-    active: false,
-    startTime: 0,
-    duration: 0.7,
-  });
-  const prevNight = useRef(isNight);
-
-  useEffect(() => {
-    if (prevNight.current !== isNight) {
-      themeAnim.current = {
-        active: true,
-        startTime: performance.now(),
-        duration: 0.7,
-      };
-      prevNight.current = isNight;
-    }
-  }, [isNight]);
 
   useFrame((state, delta) => {
     const scrollContainer = document.getElementById('main-scroll-container');
@@ -70,19 +77,6 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       progress = scrollTop / maxScroll;
     }
 
-    let driftZ = 0;
-    if (themeAnim.current.active) {
-      const now = performance.now();
-      const elapsed = (now - themeAnim.current.startTime) / 1000;
-      if (elapsed < themeAnim.current.duration) {
-        const t = elapsed / themeAnim.current.duration;
-        // Короткий плавный линейный "вздох" строго вперед по оси капота (-Z) на 0.15 единиц
-        driftZ = -0.15 * Math.sin(t * Math.PI);
-      } else {
-        themeAnim.current.active = false;
-      }
-    }
-
     if (carGroup.current) {
       carGroup.current.position.set(0, -0.75, 0);
       if (!delayedService) {
@@ -90,13 +84,6 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
         const targetRotationY = startAngle - (progress * Math.PI * 2);
         carGroup.current.rotation.y = THREE.MathUtils.damp(carGroup.current.rotation.y, targetRotationY, 4, delta);
       }
-    }
-
-    if (carBodyRef.current) {
-      // Строго прямолинейный сдвиг вперед/назад вдоль продольной оси машины.
-      // Оси X и Y, а также rotation (X, Y, Z) жестко заблокированы на 0!
-      carBodyRef.current.position.set(0, 0, driftZ);
-      carBodyRef.current.rotation.set(0, 0, 0);
     }
 
     if (isNight && neonGroup.current) {
@@ -128,8 +115,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       targetCamPos.set(2.5, 3.35, 3.5);
       targetLook.set(0.5, 0.35, 0);
     } else {
-      const baseDist = isNight ? 5.9 : 6.9;
-      targetCamPos.set(0, 0.95, baseDist);
+      targetCamPos.set(0, 0.95, 6.8);
       targetLook.set(0, 0.1, 0);
     }
     
