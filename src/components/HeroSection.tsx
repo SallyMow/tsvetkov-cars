@@ -122,8 +122,8 @@ export default function HeroSection() {
       `}</style>
 
       {/* ── 3D Canvas ── */}
-      <div className="absolute top-0 left-0 w-full h-[50vh] md:h-screen z-0 pointer-events-none">
-        <Canvas camera={{ position: [0, 1.5, 7.0], fov: 32 }}>
+      <div className="absolute top-0 left-0 w-full h-[55vh] md:h-screen z-0 pointer-events-none">
+        <Canvas camera={{ position: [0, 1.5, 7.0], fov: 36 }}>
           <ambientLight intensity={isNight ? 0.3 : 0.6} />
           <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
           <directionalLight position={[-6, 7, -2]} intensity={isNight ? 1.0 : 2.5} color={isNight ? '#e0f2fe' : '#ffffff'} />
@@ -134,7 +134,7 @@ export default function HeroSection() {
 
       {/* ── Навигация ── */}
       <nav className="absolute top-0 w-full px-4 py-4 md:p-8 flex justify-between items-center z-50 pointer-events-none">
-        <Link href="/" className="font-bold text-base md:text-xl tracking-[0.2em] uppercase drop-shadow-md pointer-events-auto hover:opacity-80 transition-opacity">
+        <Link href="/" className="font-bold text-base md:text-xl tracking-[0.2em] uppercase drop-shadow-md pointer-events-auto hover:opacity-80 transition-opacity" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.35)' }}>
           TSVETKOV CARS
         </Link>
         <div className="flex items-center gap-3 md:gap-6 pointer-events-auto">
@@ -155,19 +155,26 @@ export default function HeroSection() {
       {/* ── Скролл-контейнер ── */}
       <div
         id="main-scroll-container"
-        className={`relative z-10 w-full h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth transition-opacity duration-700 ${activeService ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 block'}`}
+        className={`relative z-10 w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth transition-opacity duration-700 ${activeService ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 block'}`}
+        style={{ height: '100dvh' }}
       >
 
         {/* Главный экран */}
-        <section className="w-full h-screen snap-center relative pointer-events-none">
+        <section className="w-full snap-center relative pointer-events-none" style={{ height: '100dvh' }}>
           <div className="absolute top-[8vh] md:top-[10vh] left-0 w-full flex flex-col items-center px-4">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl">TSVETKOV CARS</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.25)' }}>TSVETKOV CARS</h1>
             <p className="mt-3 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-medium opacity-80">Элитная доставка и аренда</p>
+          </div>
+          {/* Подсказка скролла на мобиле */}
+          <div className="absolute bottom-6 left-0 w-full flex justify-center md:hidden pointer-events-none">
+            <svg className={`w-6 h-6 opacity-30 animate-bounce ${isNight ? 'text-white' : 'text-black'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
           </div>
         </section>
 
         {/* Услуга 1 */}
-        <section className="w-full h-screen snap-center flex items-center justify-start px-4 md:px-24 pointer-events-none">
+        <section className="w-full snap-center flex items-end md:items-center justify-start px-4 md:px-24 pointer-events-none pb-8 md:pb-0" style={{ height: '100dvh' }}>
           <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">01 / Логистика</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Логистика под ключ</h2>
@@ -179,7 +186,7 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 2 */}
-        <section className="w-full h-screen snap-center flex items-center justify-end px-4 md:px-24 pointer-events-none">
+        <section className="w-full snap-center flex items-end md:items-center justify-end px-4 md:px-24 pointer-events-none pb-8 md:pb-0" style={{ height: '100dvh' }}>
           <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">02 / Оформление</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Таможенная очистка</h2>
@@ -191,7 +198,7 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 3 */}
-        <section className="w-full h-screen snap-center flex items-center justify-start px-4 md:px-24 pointer-events-none">
+        <section className="w-full snap-center flex items-end md:items-center justify-start px-4 md:px-24 pointer-events-none pb-8 md:pb-0" style={{ height: '100dvh' }}>
           <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">03 / Подбор</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Эксклюзив</h2>
@@ -326,9 +333,15 @@ export default function HeroSection() {
 
       </div>
 
-      {/* ── ЗАДАЧА 4: Плавающие мессенджеры (fixed) — премиальная капсула ── */}
-      <div className="fixed bottom-8 right-8 z-50 flex flex-col items-center gap-0 rounded-full border border-white/10 backdrop-blur-xl shadow-2xl overflow-hidden"
-        style={{ background: 'rgba(24,24,27,0.85)' }}>
+      {/* ── Плавающие мессенджеры — скрыты на мобиле когда открыта форма ── */}
+      <div
+        className={`fixed z-50 flex flex-col items-center gap-0 rounded-full border border-white/10 backdrop-blur-xl shadow-2xl overflow-hidden transition-all duration-300 ${activeService ? 'opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto' : 'opacity-100'}`}
+        style={{
+          background: 'rgba(24,24,27,0.85)',
+          bottom: 'max(24px, env(safe-area-inset-bottom, 24px))',
+          right: 'max(16px, env(safe-area-inset-right, 16px))',
+        }}
+      >
         <a href="https://t.me/tsvetkovcars" target="_blank" rel="noopener noreferrer"
           className="w-[52px] h-[52px] flex items-center justify-center text-white/60 hover:text-[#ffb86c] transition-colors duration-200"
           title="Telegram">
@@ -342,101 +355,112 @@ export default function HeroSection() {
         </a>
       </div>
 
-      {/* ── ЗАДАЧА 1: Оверлей с реальной формой заявки ── */}
+      {/* ── Оверлей с формой заявки ── */}
       {activeService && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 pointer-events-none flex items-center">
-          <div className={`absolute top-0 left-0 w-[80%] md:w-[45%] h-full bg-gradient-to-r ${isNight ? 'from-[#09090b] via-[#09090b]/80' : 'from-[#fcfcfc] via-[#fcfcfc]/90'} to-transparent z-0 anim-bg`}></div>
+        <div className="fixed top-0 left-0 w-full h-full z-50 pointer-events-none flex items-stretch md:items-center">
+          {/* Фон — на мобиле полная ширина и высокая непрозрачность */}
+          <div className={`absolute top-0 left-0 w-full md:w-[50%] h-full bg-gradient-to-r ${isNight ? 'from-[#09090b] via-[#09090b]/95' : 'from-[#fcfcfc] via-[#fcfcfc]/97'} to-transparent z-0 anim-bg md:opacity-100`}></div>
+          {/* Дополнительный мобильный фон (полная ширина, блокирует 3D) */}
+          <div className={`absolute top-0 left-0 w-full h-full md:hidden z-0 ${isNight ? 'bg-[#09090b]/90' : 'bg-[#fcfcfc]/92'} backdrop-blur-sm`}></div>
 
-          <div key={activeService} className="pointer-events-auto anim-sidebar relative pl-10 md:pl-24 py-10 max-w-lg z-10">
-            <div className={`absolute top-0 left-10 md:left-24 w-[2px] ${isNight ? 'bg-[#ffb86c]' : 'bg-black'} anim-line shadow-[0_0_15px_#ffb86c]`}></div>
+          {/* Контент формы — на мобиле скроллируемый блок на всю высоту */}
+          <div
+            key={activeService}
+            className="pointer-events-auto anim-sidebar relative z-10 w-full md:max-w-lg flex flex-col justify-start md:justify-center overflow-y-auto"
+            style={{ paddingTop: 'max(72px, env(safe-area-inset-top, 72px))', paddingBottom: 'max(32px, env(safe-area-inset-bottom, 32px))' }}
+          >
+            {/* Декоративная вертикальная линия */}
+            <div className={`absolute top-0 left-4 md:left-24 w-[2px] ${isNight ? 'bg-[#ffb86c]' : 'bg-black'} anim-line shadow-[0_0_15px_#ffb86c]`}></div>
 
-            <div className="anim-item-1 mb-4 flex items-center gap-3 pl-6">
-              <div className={`h-2 w-2 rounded-full animate-pulse ${isNight ? 'bg-[#ffb86c]' : 'bg-red-500'}`}></div>
-              <span className={`text-[10px] font-mono tracking-[0.3em] uppercase ${isNight ? 'text-white/50' : 'text-black/50'}`}>Config Mode</span>
-            </div>
+            <div className="px-8 md:pl-24 md:pr-6">
+              <div className="anim-item-1 mb-4 flex items-center gap-3">
+                <div className={`h-2 w-2 rounded-full animate-pulse ${isNight ? 'bg-[#ffb86c]' : 'bg-red-500'}`}></div>
+                <span className={`text-[10px] font-mono tracking-[0.3em] uppercase ${isNight ? 'text-white/50' : 'text-black/50'}`}>Config Mode</span>
+              </div>
 
-            <h2 className={`anim-item-2 text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-3 pl-6 ${isNight ? 'text-white' : 'text-black'}`}>
-              {activeService.split(' ').map((word, i) => (
-                <React.Fragment key={i}>{word} <br /></React.Fragment>
-              ))}
-            </h2>
+              <h2 className={`anim-item-2 text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-3 ${isNight ? 'text-white' : 'text-black'}`}>
+                {activeService.split(' ').map((word, i) => (
+                  <React.Fragment key={i}>{word} <br /></React.Fragment>
+                ))}
+              </h2>
 
-            <p className={`anim-item-3 text-sm font-medium mb-8 pl-6 ${isNight ? 'text-white/70' : 'text-black/70'}`}>
-              Оставьте заявку — наш эксперт свяжется в течение 15 минут.
-            </p>
+              <p className={`anim-item-3 text-sm font-medium mb-6 ${isNight ? 'text-white/70' : 'text-black/70'}`}>
+                Оставьте заявку — наш эксперт свяжется в течение 15 минут.
+              </p>
 
-            {/* ── Форма заявки ── */}
-            {submitted ? (
-              <div className="anim-success pl-6">
-                <div className={`flex items-center gap-4 p-6 rounded-2xl border ${isNight ? 'border-[#ffb86c]/30 bg-[#ffb86c]/8' : 'border-black/10 bg-black/3'}`}
-                  style={{ background: isNight ? 'rgba(255,184,108,0.06)' : 'rgba(0,0,0,0.02)' }}>
-                  <div className="w-10 h-10 rounded-full bg-[#ffb86c] flex items-center justify-center shrink-0">
-                    <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
+              {/* Форма */}
+              {submitted ? (
+                <div className="anim-success">
+                  <div className={`flex items-center gap-4 p-6 rounded-2xl border ${isNight ? 'border-[#ffb86c]/30 bg-[#ffb86c]/8' : 'border-black/10 bg-black/3'}`}
+                    style={{ background: isNight ? 'rgba(255,184,108,0.06)' : 'rgba(0,0,0,0.02)' }}>
+                    <div className="w-10 h-10 rounded-full bg-[#ffb86c] flex items-center justify-center shrink-0">
+                      <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm uppercase tracking-wide">Заявка отправлена!</p>
+                      <p className={`text-xs mt-1 ${isNight ? 'opacity-60' : 'opacity-60'}`}>Мы свяжемся с вами в течение 15 минут</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="anim-item-3 flex flex-col gap-5">
+                  <div>
+                    <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Ваше имя</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Иван Иванов"
+                      value={formName}
+                      onChange={e => setFormName(e.target.value)}
+                      className={inputClass(isNight)}
+                    />
                   </div>
                   <div>
-                    <p className="font-bold text-sm uppercase tracking-wide">Заявка отправлена!</p>
-                    <p className={`text-xs mt-1 ${isNight ? 'opacity-60' : 'opacity-60'}`}>Мы свяжемся с вами в течение 15 минут</p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="anim-item-3 flex flex-col gap-5 pl-6">
-                <div>
-                  <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Ваше имя</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Иван Иванов"
-                    value={formName}
-                    onChange={e => setFormName(e.target.value)}
-                    className={inputClass(isNight)}
-                  />
-                </div>
-                <div>
-                  <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Телефон</label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="+7 977 877 56 25"
-                    value={formPhone}
-                    onChange={e => setFormPhone(e.target.value)}
-                    className={inputClass(isNight)}
-                  />
-                </div>
-                <div className="flex flex-col gap-3 mt-2">
-                  {/* ФЗ-152: согласие на обработку данных */}
-                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Телефон</label>
                     <input
-                      type="checkbox"
+                      type="tel"
                       required
-                      className="mt-0.5 w-4 h-4 shrink-0 accent-[#ffb86c] cursor-pointer"
+                      placeholder="+7 977 877 56 25"
+                      value={formPhone}
+                      onChange={e => setFormPhone(e.target.value)}
+                      className={inputClass(isNight)}
                     />
-                    <span className={`text-[10px] leading-relaxed ${isNight ? 'text-white/40' : 'text-black/40'} group-hover:text-white/60 transition-colors`}>
-                      Нажимая кнопку, вы соглашаетесь с{' '}
-                      <span className="underline underline-offset-2 cursor-pointer hover:opacity-100">
-                        Политикой конфиденциальности
-                      </span>{' '}
-                      и обработкой персональных данных.
-                    </span>
-                  </label>
-                  <button
-                    type="submit"
-                    className={`w-full py-4 font-bold uppercase tracking-[0.2em] text-xs transition-all shadow-lg cursor-pointer ${isNight ? 'bg-[#ffb86c] text-black hover:bg-[#eab308]' : 'bg-black text-white hover:bg-zinc-800'}`}
-                  >
-                    Отправить заявку
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveService(null)}
-                    className={`w-full py-4 bg-transparent border font-bold uppercase tracking-[0.2em] text-xs transition-all cursor-pointer ${isNight ? 'border-white/20 text-white hover:border-white/60' : 'border-black/20 text-black hover:border-black/60'}`}
-                  >
-                    Вернуться к меню
-                  </button>
-                </div>
-              </form>
-            )}
+                  </div>
+                  <div className="flex flex-col gap-3 mt-2">
+                    {/* ФЗ-152 */}
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        required
+                        className="mt-0.5 w-4 h-4 shrink-0 accent-[#ffb86c] cursor-pointer"
+                      />
+                      <span className={`text-[10px] leading-relaxed ${isNight ? 'text-white/40' : 'text-black/40'} group-hover:text-white/60 transition-colors`}>
+                        Нажимая кнопку, вы соглашаетесь с{' '}
+                        <span className="underline underline-offset-2 cursor-pointer hover:opacity-100">
+                          Политикой конфиденциальности
+                        </span>{' '}
+                        и обработкой персональных данных.
+                      </span>
+                    </label>
+                    <button
+                      type="submit"
+                      className={`w-full py-4 font-bold uppercase tracking-[0.2em] text-xs transition-all shadow-lg cursor-pointer ${isNight ? 'bg-[#ffb86c] text-black hover:bg-[#eab308]' : 'bg-black text-white hover:bg-zinc-800'}`}
+                    >
+                      Отправить заявку
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveService(null)}
+                      className={`w-full py-4 bg-transparent border font-bold uppercase tracking-[0.2em] text-xs transition-all cursor-pointer ${isNight ? 'border-white/20 text-white hover:border-white/60' : 'border-black/20 text-black hover:border-black/60'}`}
+                    >
+                      Вернуться к меню
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       )}

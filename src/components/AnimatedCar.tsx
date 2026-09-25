@@ -75,9 +75,13 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       targetCamPos.set(4.0, 1.5, -4.5);
       targetLook.set(2.0, 0.2, 0);
     } else {
-      const dist = isNight ? 5.8 : 7.0;
-      targetCamPos.set(0, 1.0, dist);
-      targetLook.set(0, 0.2, 0);
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+      const dist = isMobile
+        ? (isNight ? 9.5 : 11.0)
+        : (isNight ? 5.8 : 7.0);
+      const camY = isMobile ? 1.6 : 1.0;
+      targetCamPos.set(0, camY, dist);
+      targetLook.set(0, isMobile ? -0.2 : 0.2, 0);
     }
     
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
@@ -121,7 +125,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       )}
 
       <group ref={carGroup}>
-        <primitive object={scene} scale={1.15} />
+      <primitive object={scene} scale={typeof window !== 'undefined' && window.innerWidth < 768 ? 0.95 : 1.15} />
         
         {isNight && (
           <group>
