@@ -5,7 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
-useGLTF.preload('/porsche/scene.gltf');
+useGLTF.preload('/porsche/scene.gltf', true);
 
 interface AnimatedCarProps {
   isNight?: boolean;
@@ -14,7 +14,7 @@ interface AnimatedCarProps {
 }
 
 export default function AnimatedCar({ isNight, theme, activeService }: AnimatedCarProps) {
-  const { scene } = useGLTF('/porsche/scene.gltf');
+  const { scene } = useGLTF('/porsche/scene.gltf', true);
   const carGroup = useRef<THREE.Group>(null);
   const carRef = useRef<THREE.Group>(null);
   const neonGroup = useRef<THREE.Group>(null);
