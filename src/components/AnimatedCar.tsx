@@ -19,6 +19,16 @@ export default function AnimatedCar({ isNight, theme, activeService }: AnimatedC
   const carRef = useRef<THREE.Group>(null);
   const neonGroup = useRef<THREE.Group>(null);
   const [delayedService, setDelayedService] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const isDark = theme !== undefined ? theme === 'dark' : !!isNight;
 
@@ -56,7 +66,8 @@ export default function AnimatedCar({ isNight, theme, activeService }: AnimatedC
     }
 
     if (carGroup.current) {
-      carGroup.current.position.set(0, -0.75, 0);
+      const baseY = isMobile ? -0.32 : -0.75;
+      carGroup.current.position.set(0, baseY, 0);
       if (!delayedService) {
         const startAngle = Math.PI * 0.75; 
         const targetRotationY = startAngle - (progress * Math.PI * 2);
@@ -66,8 +77,9 @@ export default function AnimatedCar({ isNight, theme, activeService }: AnimatedC
 
     if (carRef.current) {
       // Капот машины в 3D модели направлен по оси -Z (фары при z = -2.07)
-      // Для ночного режима плавно подаем машину вперед по направлению капота (-0.15)
-      const targetZ = (theme === 'dark' || isNight) ? -0.15 : 0; 
+      // Для ночного режима плавно подаем машину вперед по направлению капота (-0.15 на ПК, -0.06 на моб)
+      const forwardShift = isMobile ? -0.06 : -0.15;
+      const targetZ = (theme === 'dark' || isNight) ? forwardShift : 0; 
       
       // Плавно интерполируем текущую позицию к целевой в каждом кадре
       carRef.current.position.z = THREE.MathUtils.lerp(
@@ -151,7 +163,7 @@ export default function AnimatedCar({ isNight, theme, activeService }: AnimatedC
       )}
 
       <group ref={carGroup}>
-        <group ref={carRef}>
+        <group ref={carRef} scale={isMobile ? 0.30 : 1.0}>
           <primitive object={scene} scale={1.15} />
           
           {isNight && (
@@ -187,12 +199,12 @@ export default function AnimatedCar({ isNight, theme, activeService }: AnimatedC
         </group>
       </group>
 
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.74, 0]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, isMobile ? -0.31 : -0.74, 0]} scale={isMobile ? 0.35 : 1.0}>
         <planeGeometry args={[5, 10]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.9 : 0.7} depthWrite={false} />
       </mesh>
       
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[2, -0.745, 2]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[isMobile ? 0.7 : 2, isMobile ? -0.315 : -0.745, isMobile ? 0.7 : 2]} scale={isMobile ? 0.35 : 1.0}>
         <planeGeometry args={[8, 12]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.6 : 0.4} depthWrite={false} />
       </mesh>
