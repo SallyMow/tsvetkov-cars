@@ -41,11 +41,13 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
   const targetR = useMemo(() => { const t = new THREE.Object3D(); t.position.set(-0.78, 0.82, -10); return t; }, []);
   const currentLookAt = useRef(new THREE.Vector3(0, -0.2, 0));
 
+  const shadowRef1 = useRef<THREE.Mesh>(null);
+  const shadowRef2 = useRef<THREE.Mesh>(null);
+
   const themeAnim = useRef({
     active: false,
     startTime: 0,
-    duration: 1.2,
-    toNight: false,
+    duration: 0.7,
   });
   const prevNight = useRef(isNight);
 
@@ -54,8 +56,7 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       themeAnim.current = {
         active: true,
         startTime: performance.now(),
-        duration: 1.2,
-        toNight: isNight,
+        duration: 0.7,
       };
       prevNight.current = isNight;
     }
@@ -71,14 +72,30 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       progress = scrollTop / maxScroll;
     }
 
+    let driftZ = 0;
+    if (themeAnim.current.active) {
+      const now = performance.now();
+      const elapsed = (now - themeAnim.current.startTime) / 1000;
+      if (elapsed < themeAnim.current.duration) {
+        const t = elapsed / themeAnim.current.duration;
+        // Короткий плавный линейный дрейф строго вперед по оси Z на ~8 см и возврат
+        driftZ = 0.08 * Math.sin(t * Math.PI);
+      } else {
+        themeAnim.current.active = false;
+      }
+    }
+
     if (carGroup.current) {
-      carGroup.current.position.y = -0.75;
+      carGroup.current.position.set(0, -0.75, driftZ);
       if (!delayedService) {
         const startAngle = Math.PI * 0.75; 
         const targetRotationY = startAngle - (progress * Math.PI * 2);
         carGroup.current.rotation.y = THREE.MathUtils.damp(carGroup.current.rotation.y, targetRotationY, 4, delta);
       }
     }
+
+    if (shadowRef1.current) shadowRef1.current.position.z = driftZ;
+    if (shadowRef2.current) shadowRef2.current.position.z = 2 + driftZ;
 
     if (isNight && neonGroup.current) {
       neonGroup.current.rotation.y += delta * 0.4;
@@ -110,31 +127,13 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       targetLook.set(0.5, 0.35, 0);
     } else {
       const baseDist = isNight ? 5.9 : 6.9;
-      let arcX = 0;
-      let arcY = 0;
-
-      if (themeAnim.current.active) {
-        const now = performance.now();
-        const elapsed = (now - themeAnim.current.startTime) / 1000;
-        if (elapsed < themeAnim.current.duration) {
-          const t = elapsed / themeAnim.current.duration;
-          const sinWave = Math.sin(t * Math.PI);
-          const dir = themeAnim.current.toNight ? 1 : -1;
-          arcX = dir * 1.8 * sinWave;
-          arcY = 0.25 * sinWave;
-        } else {
-          themeAnim.current.active = false;
-        }
-      }
-
-      targetCamPos.set(arcX, 0.95 + arcY, baseDist);
-      targetLook.set(arcX * 0.3, 0.1, 0);
+      targetCamPos.set(0, 0.95, baseDist);
+      targetLook.set(0, 0.1, 0);
     }
     
-    const camDamp = themeAnim.current.active ? 3.0 : 2.0;
-    state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, camDamp, delta);
-    state.camera.position.y = THREE.MathUtils.damp(state.camera.position.y, targetCamPos.y, camDamp, delta);
-    state.camera.position.z = THREE.MathUtils.damp(state.camera.position.z, targetCamPos.z, camDamp, delta);
+    state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
+    state.camera.position.y = THREE.MathUtils.damp(state.camera.position.y, targetCamPos.y, 2.0, delta);
+    state.camera.position.z = THREE.MathUtils.damp(state.camera.position.z, targetCamPos.z, 2.0, delta);
     
     currentLookAt.current.x = THREE.MathUtils.damp(currentLookAt.current.x, targetLook.x, 2.5, delta);
     currentLookAt.current.y = THREE.MathUtils.damp(currentLookAt.current.y, targetLook.y, 2.5, delta);
@@ -207,12 +206,12 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
         )}
       </group>
 
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.74, 0]}>
+      <mesh ref={shadowRef1} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.74, 0]}>
         <planeGeometry args={[5, 10]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.9 : 0.7} depthWrite={false} />
       </mesh>
       
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[2, -0.745, 2]}>
+      <mesh ref={shadowRef2} rotation={[-Math.PI / 2, 0, 0]} position={[2, -0.745, 2]}>
         <planeGeometry args={[8, 12]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.6 : 0.4} depthWrite={false} />
       </mesh>

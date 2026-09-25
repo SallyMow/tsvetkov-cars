@@ -53,8 +53,6 @@ export default function RootLayout({
   return (
     <html lang="ru" className="dark">
       <body className={`${inter.variable} font-sans bg-zinc-950 text-white antialiased`}>
-        {/* Scanline effect */}
-        <div className="scanline" />
         {children}
       </body>
     </html>
