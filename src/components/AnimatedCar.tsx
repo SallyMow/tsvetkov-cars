@@ -77,11 +77,11 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     } else {
       const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
       const dist = isMobile
-        ? (isNight ? 8.2 : 9.5)
+        ? (isNight ? 6.2 : 7.2)
         : (isNight ? 5.8 : 7.0);
-      const camY = isMobile ? 1.6 : 1.0;
+      const camY = isMobile ? 1.35 : 1.0;
       targetCamPos.set(0, camY, dist);
-      targetLook.set(0, isMobile ? -0.3 : 0.2, 0);
+      targetLook.set(0, isMobile ? -0.22 : 0.2, 0);
     }
     
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, targetCamPos.x, 2.0, delta);
@@ -111,6 +111,9 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
     return new THREE.CanvasTexture(canvas);
   }, []);
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const currentScale = isMobile ? 1.08 : 1.15;
+
   return (
     <group>
       
@@ -125,38 +128,47 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       )}
 
       <group ref={carGroup}>
-      <primitive object={scene} scale={typeof window !== 'undefined' && window.innerWidth < 768 ? 0.95 : 1.15} />
-        
-        {isNight && (
-          <group>
-            <primitive object={targetL} />
-            <primitive object={targetR} />
-            
-            <spotLight
-              position={[0.78, 0.82, -2.07]}
-              angle={0.4} penumbra={0.5} intensity={250}
-              color="#ffffff" distance={40}
-              target={targetL}
-            />
-            <spotLight
-              position={[-0.78, 0.82, -2.07]}
-              angle={0.4} penumbra={0.5} intensity={250}
-              color="#ffffff" distance={40}
-              target={targetR}
-            />
+        <group scale={currentScale}>
+          <primitive object={scene} />
+          
+          {isNight && (
+            <group>
+              <primitive object={targetL} />
+              <primitive object={targetR} />
+              
+              <spotLight
+                position={[0.78, 0.82, -2.07]}
+                angle={0.4} penumbra={0.5} intensity={250}
+                color="#ffffff" distance={40}
+                target={targetL}
+              />
+              <spotLight
+                position={[-0.78, 0.82, -2.07]}
+                angle={0.4} penumbra={0.5} intensity={250}
+                color="#ffffff" distance={40}
+                target={targetR}
+              />
 
-            <mesh position={[-0.3, 0.69, 2.67]}>
-              <boxGeometry args={[0.4, 0.05, 0.05]} />
-              <meshBasicMaterial color="#ff0000" toneMapped={false} />
-            </mesh>
-            <mesh position={[0.3, 0.69, 2.67]}>
-              <boxGeometry args={[0.4, 0.05, 0.05]} />
-              <meshBasicMaterial color="#ff0000" toneMapped={false} />
-            </mesh>
-            
-            <pointLight position={[0, 0.69, 2.8]} intensity={8} color="#ff0000" distance={3} />
-          </group>
-        )}
+              {/* Задняя непрерывная светодиодная LED-полоса Porsche 911 (992) */}
+              <mesh position={[0, 0.74, 1.96]}>
+                <boxGeometry args={[1.24, 0.03, 0.03]} />
+                <meshBasicMaterial color="#ff1e1e" toneMapped={false} />
+              </mesh>
+              {/* Левый и правый акцентные блоки задних фонарей */}
+              <mesh position={[-0.58, 0.74, 1.96]}>
+                <boxGeometry args={[0.18, 0.045, 0.03]} />
+                <meshBasicMaterial color="#ff0000" toneMapped={false} />
+              </mesh>
+              <mesh position={[0.58, 0.74, 1.96]}>
+                <boxGeometry args={[0.18, 0.045, 0.03]} />
+                <meshBasicMaterial color="#ff0000" toneMapped={false} />
+              </mesh>
+              
+              {/* Мягкий красный свет от задних фонарей */}
+              <pointLight position={[0, 0.74, 2.02]} intensity={6} color="#ff2222" distance={3.5} />
+            </group>
+          )}
+        </group>
       </group>
 
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.89, 0]}>

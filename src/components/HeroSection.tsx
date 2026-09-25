@@ -134,7 +134,7 @@ export default function HeroSection() {
       `}</style>
 
       {/* ── 3D Canvas ── */}
-      <div className="absolute top-0 left-0 w-full h-[55vh] md:h-screen z-0 pointer-events-none">
+      <div className="absolute top-0 left-0 w-full h-[50vh] md:h-screen z-0 pointer-events-none">
         <Canvas camera={{ position: [0, 1.5, 7.0], fov: 36 }}>
           <ambientLight intensity={isNight ? 0.3 : 0.6} />
           <directionalLight position={[5, 3, -5]} intensity={isNight ? 0.8 : 1.5} color={isNight ? '#8be9fd' : '#ffffff'} />
@@ -171,8 +171,8 @@ export default function HeroSection() {
         style={{ height: '100dvh', touchAction: 'pan-y' }}
       >
 
-        {/* Главный экран — мобиле 57dvh → сервис-1 виден снизу; desktop — 100dvh */}
-        <section className="w-full h-[57dvh] md:h-screen snap-start relative pointer-events-none">
+        {/* Главный экран — мобиле h-[44vh] → карточка услуг начинается сразу под авто; desktop — 100dvh */}
+        <section className="w-full h-[44vh] md:h-screen snap-start relative pointer-events-none">
           <div className="absolute top-[8vh] md:top-[10vh] left-0 w-full flex flex-col items-center px-4">
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.25)' }}>TSVETKOV CARS</h1>
             <p className="mt-3 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-medium opacity-80">Элитная доставка и аренда</p>
@@ -180,7 +180,7 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 1 */}
-        <section className="w-full snap-center flex items-end md:items-center justify-start px-4 md:px-24 pointer-events-none pb-8 md:pb-0" style={{ height: '100dvh' }}>
+        <section className="w-full snap-start md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-7 md:pt-0 pb-16 md:pb-0 min-h-[65vh] md:h-screen">
           <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">01 / Логистика</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Логистика под ключ</h2>
@@ -192,7 +192,7 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 2 */}
-        <section className="w-full snap-center flex items-end md:items-center justify-end px-4 md:px-24 pointer-events-none pb-8 md:pb-0" style={{ height: '100dvh' }}>
+        <section className="w-full snap-start md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start md:justify-end px-4 md:px-24 pointer-events-none pt-7 md:pt-0 pb-16 md:pb-0 min-h-[65vh] md:h-screen">
           <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">02 / Оформление</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Таможенная очистка</h2>
@@ -204,7 +204,7 @@ export default function HeroSection() {
         </section>
 
         {/* Услуга 3 */}
-        <section className="w-full snap-center flex items-end md:items-center justify-start px-4 md:px-24 pointer-events-none pb-8 md:pb-0" style={{ height: '100dvh' }}>
+        <section className="w-full snap-start md:snap-center flex flex-col md:flex-row items-start md:items-center justify-start px-4 md:px-24 pointer-events-none pt-7 md:pt-0 pb-16 md:pb-0 min-h-[65vh] md:h-screen">
           <div className={`backdrop-blur-2xl p-6 md:p-10 w-full max-w-lg pointer-events-auto transition-colors duration-700 shadow-2xl rounded-3xl ${isNight ? 'bg-zinc-900/90 text-white border border-white/10' : 'bg-white/90 text-black border border-black/10'}`}>
             <span className="opacity-60 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">03 / Подбор</span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">Эксклюзив</h2>
