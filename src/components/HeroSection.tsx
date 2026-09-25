@@ -164,6 +164,16 @@ export default function HeroSection() {
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-widest uppercase text-center drop-shadow-2xl">TSVETKOV CARS</h1>
             <p className="mt-3 md:mt-4 tracking-[0.3em] md:tracking-[0.4em] uppercase text-[10px] md:text-xs font-medium opacity-80">Элитная доставка и аренда</p>
           </div>
+
+          {/* Подсказка для скролла только на мобильных устройствах */}
+          <div className="absolute bottom-8 left-0 w-full flex md:hidden flex-col items-center gap-1.5 opacity-70 animate-bounce pointer-events-none">
+            <span className={`text-[10px] font-mono uppercase tracking-[0.25em] ${isNight ? 'text-white/70' : 'text-black/70'}`}>
+              Листайте вниз
+            </span>
+            <svg className={`w-4 h-4 ${isNight ? 'text-white/70' : 'text-black/70'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
         </section>
 
         {/* Услуга 1 */}
@@ -375,7 +385,7 @@ export default function HeroSection() {
       </div>
 
       {/* ── ЗАДАЧА 4: Плавающие мессенджеры (fixed) — премиальная капсула ── */}
-      <div className="fixed bottom-8 right-8 z-50 flex flex-col items-center gap-0 rounded-full border border-white/10 backdrop-blur-xl shadow-2xl overflow-hidden"
+      <div className={`fixed bottom-8 right-8 z-50 ${activeService ? 'hidden md:flex' : 'flex'} flex-col items-center gap-0 rounded-full border border-white/10 backdrop-blur-xl shadow-2xl overflow-hidden`}
         style={{ background: 'rgba(24,24,27,0.85)' }}>
         <a href="https://t.me/tsvetkovcars" target="_blank" rel="noopener noreferrer"
           className="w-[52px] h-[52px] flex items-center justify-center text-white/60 hover:text-[#ffb86c] transition-colors duration-200"
@@ -393,29 +403,29 @@ export default function HeroSection() {
       {/* ── ЗАДАЧА 1: Оверлей с реальной формой заявки ── */}
       {activeService && (
         <div className="fixed top-0 left-0 w-full h-full z-50 pointer-events-none flex items-center">
-          <div className={`absolute top-0 left-0 w-[80%] md:w-[45%] h-full bg-gradient-to-r ${isNight ? 'from-[#09090b] via-[#09090b]/80' : 'from-[#fcfcfc] via-[#fcfcfc]/90'} to-transparent z-0 anim-bg`}></div>
+          <div className={`absolute top-0 left-0 w-full md:w-[45%] h-full bg-gradient-to-r ${isNight ? 'from-[#09090b] via-[#09090b]/95 to-[#09090b]/80 md:to-transparent' : 'from-[#fcfcfc] via-[#fcfcfc]/95 to-[#fcfcfc]/80 md:to-transparent'} z-0 anim-bg`}></div>
 
-          <div key={activeService} className="pointer-events-auto anim-sidebar relative pl-10 md:pl-24 py-10 max-w-lg z-10">
-            <div className={`absolute top-0 left-10 md:left-24 w-[2px] ${isNight ? 'bg-[#ffb86c]' : 'bg-black'} anim-line shadow-[0_0_15px_#ffb86c]`}></div>
+          <div key={activeService} className="pointer-events-auto anim-sidebar relative px-6 md:px-0 md:pl-24 py-8 md:py-10 max-w-lg w-full z-10">
+            <div className={`hidden md:block absolute top-0 left-24 w-[2px] ${isNight ? 'bg-[#ffb86c]' : 'bg-black'} anim-line shadow-[0_0_15px_#ffb86c]`}></div>
 
-            <div className="anim-item-1 mb-4 flex items-center gap-3 pl-6">
+            <div className="anim-item-1 mb-4 flex items-center gap-3 md:pl-6">
               <div className={`h-2 w-2 rounded-full animate-pulse ${isNight ? 'bg-[#ffb86c]' : 'bg-red-500'}`}></div>
               <span className={`text-[10px] font-mono tracking-[0.3em] uppercase ${isNight ? 'text-white/50' : 'text-black/50'}`}>Config Mode</span>
             </div>
 
-            <h2 className={`anim-item-2 text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-3 pl-6 ${isNight ? 'text-white' : 'text-black'}`}>
+            <h2 className={`anim-item-2 text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-3 md:pl-6 ${isNight ? 'text-white' : 'text-black'}`}>
               {activeService.split(' ').map((word, i) => (
                 <React.Fragment key={i}>{word} <br /></React.Fragment>
               ))}
             </h2>
 
-            <p className={`anim-item-3 text-sm font-medium mb-8 pl-6 ${isNight ? 'text-white/70' : 'text-black/70'}`}>
+            <p className={`anim-item-3 text-sm font-medium mb-6 md:mb-8 md:pl-6 ${isNight ? 'text-white/70' : 'text-black/70'}`}>
               Оставьте заявку — наш эксперт свяжется в течение 15 минут.
             </p>
 
             {/* ── Форма заявки ── */}
             {submitted ? (
-              <div className="anim-success pl-6">
+              <div className="anim-success md:pl-6">
                 <div className={`flex items-center gap-4 p-6 rounded-2xl border ${isNight ? 'border-[#ffb86c]/30 bg-[#ffb86c]/8' : 'border-black/10 bg-black/3'}`}
                   style={{ background: isNight ? 'rgba(255,184,108,0.06)' : 'rgba(0,0,0,0.02)' }}>
                   <div className="w-10 h-10 rounded-full bg-[#ffb86c] flex items-center justify-center shrink-0">
@@ -430,7 +440,7 @@ export default function HeroSection() {
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="anim-item-3 flex flex-col gap-5 pl-6">
+              <form onSubmit={handleSubmit} className="anim-item-3 flex flex-col gap-5 md:pl-6">
                 <div>
                   <label className={`block text-[10px] font-bold tracking-[0.15em] uppercase mb-2 ${isNight ? 'text-white/40' : 'text-black/40'}`}>Ваше имя</label>
                   <input
