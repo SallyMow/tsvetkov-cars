@@ -15,6 +15,7 @@ interface AnimatedCarProps {
 export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps) {
   const { scene } = useGLTF('/porsche/scene.gltf');
   const carGroup = useRef<THREE.Group>(null);
+  const carBodyRef = useRef<THREE.Group>(null);
   const neonGroup = useRef<THREE.Group>(null);
   const [delayedService, setDelayedService] = useState<string | null>(null);
 
@@ -40,9 +41,6 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
   const targetL = useMemo(() => { const t = new THREE.Object3D(); t.position.set(0.78, 0.82, -10); return t; }, []);
   const targetR = useMemo(() => { const t = new THREE.Object3D(); t.position.set(-0.78, 0.82, -10); return t; }, []);
   const currentLookAt = useRef(new THREE.Vector3(0, -0.2, 0));
-
-  const shadowRef1 = useRef<THREE.Mesh>(null);
-  const shadowRef2 = useRef<THREE.Mesh>(null);
 
   const themeAnim = useRef({
     active: false,
@@ -78,15 +76,15 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       const elapsed = (now - themeAnim.current.startTime) / 1000;
       if (elapsed < themeAnim.current.duration) {
         const t = elapsed / themeAnim.current.duration;
-        // Короткий плавный линейный дрейф строго вперед по оси Z на ~8 см и возврат
-        driftZ = 0.08 * Math.sin(t * Math.PI);
+        // Короткий плавный линейный "вздох" строго вперед по оси капота (-Z) на 0.15 единиц
+        driftZ = -0.15 * Math.sin(t * Math.PI);
       } else {
         themeAnim.current.active = false;
       }
     }
 
     if (carGroup.current) {
-      carGroup.current.position.set(0, -0.75, driftZ);
+      carGroup.current.position.set(0, -0.75, 0);
       if (!delayedService) {
         const startAngle = Math.PI * 0.75; 
         const targetRotationY = startAngle - (progress * Math.PI * 2);
@@ -94,8 +92,12 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       }
     }
 
-    if (shadowRef1.current) shadowRef1.current.position.z = driftZ;
-    if (shadowRef2.current) shadowRef2.current.position.z = 2 + driftZ;
+    if (carBodyRef.current) {
+      // Строго прямолинейный сдвиг вперед/назад вдоль продольной оси машины.
+      // Оси X и Y, а также rotation (X, Y, Z) жестко заблокированы на 0!
+      carBodyRef.current.position.set(0, 0, driftZ);
+      carBodyRef.current.rotation.set(0, 0, 0);
+    }
 
     if (isNight && neonGroup.current) {
       neonGroup.current.rotation.y += delta * 0.4;
@@ -172,46 +174,48 @@ export default function AnimatedCar({ isNight, activeService }: AnimatedCarProps
       )}
 
       <group ref={carGroup}>
-        <primitive object={scene} scale={1.15} />
-        
-        {isNight && (
-          <group>
-            <primitive object={targetL} />
-            <primitive object={targetR} />
-            
-            <spotLight
-              position={[0.78, 0.82, -2.07]}
-              angle={0.4} penumbra={0.5} intensity={250}
-              color="#ffffff" distance={40}
-              target={targetL}
-            />
-            <spotLight
-              position={[-0.78, 0.82, -2.07]}
-              angle={0.4} penumbra={0.5} intensity={250}
-              color="#ffffff" distance={40}
-              target={targetR}
-            />
+        <group ref={carBodyRef}>
+          <primitive object={scene} scale={1.15} />
+          
+          {isNight && (
+            <group>
+              <primitive object={targetL} />
+              <primitive object={targetR} />
+              
+              <spotLight
+                position={[0.78, 0.82, -2.07]}
+                angle={0.4} penumbra={0.5} intensity={250}
+                color="#ffffff" distance={40}
+                target={targetL}
+              />
+              <spotLight
+                position={[-0.78, 0.82, -2.07]}
+                angle={0.4} penumbra={0.5} intensity={250}
+                color="#ffffff" distance={40}
+                target={targetR}
+              />
 
-            <mesh position={[-0.3, 0.69, 2.67]}>
-              <boxGeometry args={[0.4, 0.05, 0.05]} />
-              <meshBasicMaterial color="#ff0000" toneMapped={false} />
-            </mesh>
-            <mesh position={[0.3, 0.69, 2.67]}>
-              <boxGeometry args={[0.4, 0.05, 0.05]} />
-              <meshBasicMaterial color="#ff0000" toneMapped={false} />
-            </mesh>
-            
-            <pointLight position={[0, 0.69, 2.8]} intensity={8} color="#ff0000" distance={3} />
-          </group>
-        )}
+              <mesh position={[-0.3, 0.69, 2.67]}>
+                <boxGeometry args={[0.4, 0.05, 0.05]} />
+                <meshBasicMaterial color="#ff0000" toneMapped={false} />
+              </mesh>
+              <mesh position={[0.3, 0.69, 2.67]}>
+                <boxGeometry args={[0.4, 0.05, 0.05]} />
+                <meshBasicMaterial color="#ff0000" toneMapped={false} />
+              </mesh>
+              
+              <pointLight position={[0, 0.69, 2.8]} intensity={8} color="#ff0000" distance={3} />
+            </group>
+          )}
+        </group>
       </group>
 
-      <mesh ref={shadowRef1} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.74, 0]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.74, 0]}>
         <planeGeometry args={[5, 10]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.9 : 0.7} depthWrite={false} />
       </mesh>
       
-      <mesh ref={shadowRef2} rotation={[-Math.PI / 2, 0, 0]} position={[2, -0.745, 2]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[2, -0.745, 2]}>
         <planeGeometry args={[8, 12]} />
         <meshBasicMaterial map={shadowTexture} transparent opacity={isNight ? 0.6 : 0.4} depthWrite={false} />
       </mesh>
